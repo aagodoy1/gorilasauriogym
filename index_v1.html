@@ -374,79 +374,6 @@
     .footer-ig:hover { background: rgba(191,31,127,0.1); }
     .footer-copy { margin-top: 1.5rem; font-size: 0.75rem; color: rgba(238,232,255,0.2); }
 
-    /* ── NAV PERFIL BUTTON ──────────────────────────────── */
-    .nav-perfil {
-      padding: 0.5rem 1.25rem;
-      background: transparent;
-      color: var(--text-ghost) !important;
-      border: 1px solid rgba(191,31,127,0.5);
-      border-radius: 100px;
-      font-weight: 600 !important;
-      font-size: 0.875rem;
-      transition: all 0.2s !important;
-    }
-    .nav-perfil:hover {
-      background: rgba(191,31,127,0.15) !important;
-      border-color: #BF1F7F;
-      color: #BF1F7F !important;
-    }
-
-    /* ── MODAL ──────────────────────────────────────────── */
-    .modal-overlay {
-      position: fixed; inset: 0; z-index: 999;
-      background: rgba(14,7,32,0.85);
-      backdrop-filter: blur(8px);
-      display: flex !important;
-      align-items: center; justify-content: center;
-      padding: 1rem;
-    }
-    .modal-box {
-      background: #1A0A2E;
-      border: 1px solid rgba(191,31,127,0.3);
-      border-radius: 24px;
-      padding: 2.5rem;
-      width: 100%; max-width: 420px;
-      position: relative;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
-    }
-    .modal-close {
-      position: absolute; top: 1.25rem; right: 1.25rem;
-      background: rgba(255,255,255,0.07); border: none;
-      color: var(--text-ghost); border-radius: 50%;
-      width: 32px; height: 32px; cursor: pointer;
-      font-size: 0.85rem;
-      transition: background 0.2s;
-    }
-    .modal-close:hover { background: rgba(191,31,127,0.3); }
-    .modal-logo { text-align: center; margin-bottom: 1.25rem; }
-    .modal-logo img { height: 70px; filter: drop-shadow(0 0 20px rgba(191,31,127,0.4)); }
-    .modal-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2rem; letter-spacing: 0.06em;
-      background: var(--gradient);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-align: center; margin-bottom: 0.25rem;
-    }
-    .modal-sub { text-align: center; color: rgba(238,232,255,0.5); font-size: 0.875rem; margin-bottom: 2rem; }
-    .modal-form { display: flex; flex-direction: column; gap: 1rem; }
-    .input-group { display: flex; flex-direction: column; gap: 0.4rem; }
-    .input-group label { font-size: 0.78rem; font-weight: 600; color: rgba(238,232,255,0.6); text-transform: uppercase; letter-spacing: 0.08em; }
-    .input-group input {
-      padding: 0.75rem 1rem;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(191,31,127,0.25);
-      border-radius: 10px;
-      color: #fff; font-size: 0.95rem;
-      font-family: 'DM Sans', sans-serif;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .input-group input:focus { border-color: #BF1F7F; }
-    .input-group input::placeholder { color: rgba(255,255,255,0.2); }
-    .btn-full { width: 100%; text-align: center; margin-top: 0.5rem; }
-    .modal-hint { text-align: center; font-size: 0.78rem; color: rgba(238,232,255,0.3); margin-top: 0.5rem; }
-
     /* ── MOBILE ─────────────────────────────────────────── */
     @media (max-width: 768px) {
       nav { padding: 1rem 1.25rem; }
@@ -475,33 +402,8 @@
       <li><a href="#nosotros">Nosotros</a></li>
       <li><a href="#entrenadores">Entrenadores</a></li>
       <li><a href="#reservas" class="nav-cta">Reservar hora</a></li>
-      <li><a href="#" class="nav-perfil" id="btnAbrirLogin">🦍 Perfil Saurio</a></li>
     </ul>
   </nav>
-
-  <!-- MODAL LOGIN -->
-  <div id="modalLogin" class="modal-overlay" style="display:none">
-    <div class="modal-box">
-      <button class="modal-close" id="btnCerrarLogin">✕</button>
-      <div class="modal-logo">
-        <img src="logo.png" alt="Gorilasaurio" />
-      </div>
-      <h2 class="modal-title">Perfil Saurio</h2>
-      <p class="modal-sub">Ingresa con tu RUT y contraseña</p>
-      <div class="modal-form">
-        <div class="input-group">
-          <label>RUT</label>
-          <input type="text" id="inputRut" placeholder="12.345.678-9" />
-        </div>
-        <div class="input-group">
-          <label>Contraseña</label>
-          <input type="password" id="inputPass" placeholder="••••••••" />
-        </div>
-        <button class="btn-primary btn-full" id="btnLogin">Ingresar</button>
-        <p class="modal-hint">¿Olvidaste tu contraseña? Habla con tu entrenador.</p>
-      </div>
-    </div>
-  </div>
 
   <!-- HERO -->
   <header class="hero">
@@ -670,25 +572,5 @@
     <p class="footer-copy">© 2025 Gorilasaurio Gym · Volcán Chuncaví, Santiago, Chile</p>
   </footer>
 
-  <script>
-    const modal = document.getElementById('modalLogin');
-    document.getElementById('btnAbrirLogin').addEventListener('click', e => {
-      e.preventDefault();
-      modal.style.display = 'flex';
-    });
-    document.getElementById('btnCerrarLogin').addEventListener('click', () => {
-      modal.style.display = 'none';
-    });
-    modal.addEventListener('click', e => {
-      if (e.target === modal) modal.style.display = 'none';
-    });
-    document.getElementById('btnLogin').addEventListener('click', () => {
-      const rut = document.getElementById('inputRut').value.trim();
-      const pass = document.getElementById('inputPass').value.trim();
-      if (!rut || !pass) { alert('Ingresa tu RUT y contraseña'); return; }
-      // Por ahora redirige al perfil de demo
-      window.location.href = 'perfil.html';
-    });
-  </script>
 </body>
 </html>

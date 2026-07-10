@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perfil Saurio — Gorilasaurio Gym</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --purple-dark:  #3D1A6E;
+      --purple-mid:   #6B2DB0;
+      --magenta:      #BF1F7F;
+      --bg-night:     #0E0720;
+      --bg-card:      #1A0A2E;
+      --bg-light:     #F7F3FF;
+      --text-ink:     #1A0A2E;
+      --text-muted:   #6B5E82;
+      --text-ghost:   #EEE8FF;
+      --gradient:     linear-gradient(135deg, #3D1A6E 0%, #6B2DB0 55%, #BF1F7F 100%);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-night);
+      color: var(--text-ghost);
+      min-height: 100vh;
+    }
+
+    /* ── TOPBAR ─────────────────────────────────────────── */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(26,10,46,0.9);
+      border-bottom: 1px solid rgba(191,31,127,0.2);
+      backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .topbar-logo {
+      display: flex; align-items: center; gap: 0.75rem;
+      text-decoration: none;
+    }
+    .topbar-logo img { height: 36px; }
+    .topbar-logo span {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; letter-spacing: 0.08em;
+      background: var(--gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .topbar-right { display: flex; align-items: center; gap: 1rem; }
+    .user-chip {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: rgba(191,31,127,0.15);
+      border: 1px solid rgba(191,31,127,0.3);
+      border-radius: 100px;
+      font-size: 0.85rem; font-weight: 600;
+      color: #BF1F7F;
+    }
+    .btn-logout {
+      padding: 0.4rem 1rem;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 100px;
+      color: rgba(238,232,255,0.4);
+      font-size: 0.8rem; cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: rgba(191,31,127,0.5); color: #BF1F7F; }
+
+    /* ── LAYOUT ─────────────────────────────────────────── */
+    .page { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    /* ── HERO PERFIL ────────────────────────────────────── */
+    .perfil-hero {
+      display: flex; align-items: center; gap: 1.5rem;
+      margin-bottom: 2.5rem;
+      padding: 2rem;
+      background: var(--bg-card);
+      border: 1px solid rgba(191,31,127,0.2);
+      border-radius: 20px;
+      position: relative; overflow: hidden;
+    }
+    .perfil-hero::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--gradient);
+    }
+    .avatar {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--gradient);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; flex-shrink: 0;
+    }
+    .perfil-info h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem; letter-spacing: 0.05em;
+      background: var(--gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .perfil-meta { font-size: 0.85rem; color: rgba(238,232,255,0.4); margin-top: 0.2rem; }
+    .perfil-badge {
+      margin-left: auto;
+      padding: 0.4rem 1rem;
+      background: rgba(107,45,176,0.2);
+      border: 1px solid rgba(107,45,176,0.4);
+      border-radius: 100px;
+      font-size: 0.78rem; font-weight: 600;
+      color: #A06DE0; text-transform: uppercase; letter-spacing: 0.08em;
+    }
+
+    /* ── GRID ───────────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(107,45,176,0.2);
+      border-radius: 16px;
+      padding: 1.5rem 1.25rem;
+      position: relative; overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-3px); border-color: rgba(191,31,127,0.4); }
+    .stat-card::before {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: var(--gradient);
+    }
+    .stat-icon { font-size: 1.5rem; margin-bottom: 0.75rem; opacity: 0.8; }
+    .stat-value {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem; letter-spacing: 0.03em;
+      background: var(--gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+    .stat-unit { font-size: 1rem; opacity: 0.6; }
+    .stat-label { font-size: 0.78rem; color: rgba(238,232,255,0.4); margin-top: 0.4rem; text-transform: uppercase; letter-spacing: 0.08em; }
+    .stat-delta { font-size: 0.78rem; margin-top: 0.5rem; font-weight: 600; }
+    .delta-up { color: #4ADE80; }
+    .delta-down { color: #F87171; }
+
+    /* ── CHARTS ─────────────────────────────────────────── */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(107,45,176,0.2);
+      border-radius: 20px;
+      padding: 1.75rem;
+    }
+    .chart-card.full { grid-column: 1 / -1; }
+    .chart-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; letter-spacing: 0.05em;
+      color: var(--text-ghost);
+      margin-bottom: 0.25rem;
+    }
+    .chart-sub { font-size: 0.78rem; color: rgba(238,232,255,0.35); margin-bottom: 1.5rem; }
+    .chart-wrap { position: relative; height: 200px; }
+
+    /* ── RECORDS ────────────────────────────────────────── */
+    .records-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .record-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(107,45,176,0.2);
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+      transition: border-color 0.2s;
+    }
+    .record-card:hover { border-color: rgba(191,31,127,0.4); }
+    .record-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--gradient);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0; opacity: 0.85;
+    }
+    .record-name { font-size: 0.8rem; color: rgba(238,232,255,0.4); text-transform: uppercase; letter-spacing: 0.06em; }
+    .record-value {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem; letter-spacing: 0.03em;
+      background: var(--gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+    }
+    .record-date { font-size: 0.72rem; color: rgba(238,232,255,0.25); margin-top: 0.1rem; }
+
+    .section-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem; letter-spacing: 0.05em;
+      color: var(--text-ghost);
+      margin-bottom: 1rem; margin-top: 2rem;
+    }
+    .section-eyebrow {
+      font-size: 0.72rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.15em;
+      background: var(--gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.3rem;
+    }
+
+    /* ── PLACEHOLDER BANNER ─────────────────────────────── */
+    .placeholder-banner {
+      background: rgba(107,45,176,0.08);
+      border: 1.5px dashed rgba(107,45,176,0.3);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      font-size: 0.85rem;
+      color: rgba(238,232,255,0.4);
+      font-style: italic;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 680px) {
+      .charts-grid { grid-template-columns: 1fr; }
+      .chart-card.full { grid-column: 1; }
+      .perfil-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <a href="index.html" class="topbar-logo">
+      <img src="logo.png" alt="Gorilasaurio Gym" />
+      <span>GORILASAURIO GYM</span>
+    </a>
+    <div class="topbar-right">
+      <div class="user-chip">🦍 Juan Saurio</div>
+      <button class="btn-logout" onclick="window.location.href='index.html'">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <!-- PERFIL HERO -->
+    <div class="perfil-hero">
+      <div class="avatar">🦍</div>
+      <div class="perfil-info">
+        <h1>Juan Pérez</h1>
+        <div class="perfil-meta">RUT 12.345.678-9 · Miembro desde Enero 2024 · Entrenador: [Nombre]</div>
+      </div>
+      <div class="perfil-badge">⚡ Saurio Veterano</div>
+    </div>
+
+    <div class="placeholder-banner">
+      📋 Los datos de este perfil son de ejemplo. Tu entrenador los irá actualizando después de cada medición.
+    </div>
+
+    <!-- STATS ACTUALES -->
+    <p class="section-eyebrow">Última medición</p>
+    <p class="section-label">Tu estado actual</p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">⚖️</div>
+        <div class="stat-value">82<span class="stat-unit">kg</span></div>
+        <div class="stat-label">Peso corporal</div>
+        <div class="stat-delta delta-down">▼ 1.5 kg vs mes anterior</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📏</div>
+        <div class="stat-value">178<span class="stat-unit">cm</span></div>
+        <div class="stat-label">Altura</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🎂</div>
+        <div class="stat-value">28<span class="stat-unit">años</span></div>
+        <div class="stat-label">Edad</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-value">18<span class="stat-unit">%</span></div>
+        <div class="stat-label">% Grasa corporal</div>
+        <div class="stat-delta delta-down">▼ 0.8% vs mes anterior</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💪</div>
+        <div class="stat-value">64<span class="stat-unit">kg</span></div>
+        <div class="stat-label">Masa muscular</div>
+        <div class="stat-delta delta-up">▲ 0.6 kg vs mes anterior</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat icon">📊</div>
+        <div class="stat-value">25.9</div>
+        <div class="stat-label">IMC</div>
+        <div class="stat-delta delta-down">▼ 0.4 vs mes anterior</div>
+      </div>
+    </div>
+
+    <!-- GRÁFICOS -->
+    <p class="section-eyebrow">Últimos 6 meses</p>
+    <p class="section-label">Evolución en el tiempo</p>
+
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">Peso corporal</div>
+        <div class="chart-sub">Kilogramos · últimos 6 meses</div>
+        <div class="chart-wrap"><canvas id="chartPeso"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">% Grasa corporal</div>
+        <div class="chart-sub">Porcentaje · últimos 6 meses</div>
+        <div class="chart-wrap"><canvas id="chartGrasa"></canvas></div>
+      </div>
+      <div class="chart-card full">
+        <div class="chart-title">Masa muscular vs Grasa</div>
+        <div class="chart-sub">Composición corporal en kg · últimos 6 meses</div>
+        <div class="chart-wrap" style="height:220px"><canvas id="chartCompo"></canvas></div>
+      </div>
+    </div>
+
+    <!-- RÉCORDS POR EJERCICIO -->
+    <p class="section-eyebrow">Pesos máximos</p>
+    <p class="section-label">Récords por ejercicio</p>
+
+    <div class="records-grid">
+      <div class="record-card">
+        <div class="record-icon">🏋️</div>
+        <div>
+          <div class="record-name">Sentadilla</div>
+          <div class="record-value">120 <span style="font-size:1rem;opacity:0.6">kg</span></div>
+          <div class="record-date">Logrado el 15 Jun 2025</div>
+        </div>
+      </div>
+      <div class="record-card">
+        <div class="record-icon">⬆️</div>
+        <div>
+          <div class="record-name">Press de banca</div>
+          <div class="record-value">90 <span style="font-size:1rem;opacity:0.6">kg</span></div>
+          <div class="record-date">Logrado el 3 Jul 2025</div>
+        </div>
+      </div>
+      <div class="record-card">
+        <div class="record-icon">🔽</div>
+        <div>
+          <div class="record-name">Peso muerto</div>
+          <div class="record-value">140 <span style="font-size:1rem;opacity:0.6">kg</span></div>
+          <div class="record-date">Logrado el 22 Jun 2025</div>
+        </div>
+      </div>
+      <div class="record-card">
+        <div class="record-icon">🙌</div>
+        <div>
+          <div class="record-name">Press militar</div>
+          <div class="record-value">65 <span style="font-size:1rem;opacity:0.6">kg</span></div>
+          <div class="record-date">Logrado el 10 May 2025</div>
+        </div>
+      </div>
+      <div class="record-card">
+        <div class="record-icon">🦵</div>
+        <div>
+          <div class="record-name">Prensa de piernas</div>
+          <div class="record-value">200 <span style="font-size:1rem;opacity:0.6">kg</span></div>
+          <div class="record-date">Logrado el 1 Jul 2025</div>
+        </div>
+      </div>
+      <div class="record-card">
+        <div class="record-icon">💪</div>
+        <div>
+          <div class="record-name">Curl de bíceps</div>
+          <div class="record-value">40 <span style="font-size:1rem;opacity:0.6">kg</span></div>
+          <div class="record-date">Logrado el 28 Jun 2025</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Configuración base de Chart.js para tema oscuro
+    Chart.defaults.color = 'rgba(238,232,255,0.4)';
+    Chart.defaults.borderColor = 'rgba(107,45,176,0.15)';
+    Chart.defaults.font.family = "'DM Sans', sans-serif";
+
+    const meses = ['Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul'];
+
+    const gradientPurple = ctx => {
+      const g = ctx.createLinearGradient(0, 0, 0, 200);
+      g.addColorStop(0, 'rgba(191,31,127,0.35)');
+      g.addColorStop(1, 'rgba(61,26,110,0.02)');
+      return g;
+    };
+
+    // ── Gráfico Peso ─────────────────────────────────────
+    const ctxPeso = document.getElementById('chartPeso').getContext('2d');
+    new Chart(ctxPeso, {
+      type: 'line',
+      data: {
+        labels: meses,
+        datasets: [{
+          data: [85.5, 84.8, 84.0, 83.2, 82.8, 82.0],
+          borderColor: '#BF1F7F',
+          backgroundColor: gradientPurple(ctxPeso),
+          borderWidth: 2.5,
+          pointBackgroundColor: '#BF1F7F',
+          pointRadius: 4,
+          tension: 0.4, fill: true
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { min: 80, grid: { color: 'rgba(107,45,176,0.12)' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // ── Gráfico % Grasa ──────────────────────────────────
+    const ctxGrasa = document.getElementById('chartGrasa').getContext('2d');
+    new Chart(ctxGrasa, {
+      type: 'line',
+      data: {
+        labels: meses,
+        datasets: [{
+          data: [21.5, 20.8, 20.1, 19.4, 18.8, 18.0],
+          borderColor: '#6B2DB0',
+          backgroundColor: ctx => {
+            const g = ctx.createLinearGradient(0, 0, 0, 200);
+            g.addColorStop(0, 'rgba(107,45,176,0.35)');
+            g.addColorStop(1, 'rgba(107,45,176,0.02)');
+            return g;
+          },
+          borderWidth: 2.5,
+          pointBackgroundColor: '#6B2DB0',
+          pointRadius: 4,
+          tension: 0.4, fill: true
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { min: 15, grid: { color: 'rgba(107,45,176,0.12)' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // ── Gráfico Composición ──────────────────────────────
+    const ctxCompo = document.getElementById('chartCompo').getContext('2d');
+    new Chart(ctxCompo, {
+      type: 'bar',
+      data: {
+        labels: meses,
+        datasets: [
+          {
+            label: 'Masa muscular (kg)',
+            data: [62.1, 62.4, 63.0, 63.3, 63.8, 64.2],
+            backgroundColor: 'rgba(107,45,176,0.7)',
+            borderRadius: 6,
+          },
+          {
+            label: 'Grasa (kg)',
+            data: [18.4, 17.8, 16.9, 16.1, 15.4, 14.7],
+            backgroundColor: 'rgba(191,31,127,0.7)',
+            borderRadius: 6,
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            labels: { color: 'rgba(238,232,255,0.6)', boxRadius: 4, padding: 16 }
+          }
+        },
+        scales: {
+          y: { grid: { color: 'rgba(107,45,176,0.12)' }, stacked: false },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
