@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gorilasaurio Gym — Santiago, Chile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────── */
+    :root {
+      --purple-dark:  #3D1A6E;
+      --purple-mid:   #6B2DB0;
+      --magenta:      #BF1F7F;
+      --bg-night:     #0E0720;
+      --bg-light:     #F7F3FF;
+      --text-ink:     #1A0A2E;
+      --text-muted:   #6B5E82;
+      --text-ghost:   #EEE8FF;
+      --gradient:     linear-gradient(135deg, #3D1A6E 0%, #6B2DB0 55%, #BF1F7F 100%);
+      --gradient-h:   linear-gradient(135deg, #BF1F7F 0%, #6B2DB0 55%, #3D1A6E 100%);
+    }
+
+    /* ── RESET ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #fff;
+      color: var(--text-ink);
+      overflow-x: hidden;
+    }
+
+    /* ── NAVBAR ─────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(14, 7, 32, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(191,31,127,0.2);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.75rem;
+      text-decoration: none;
+    }
+    .nav-logo img { height: 40px; width: auto; }
+    .nav-logo span {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.08em;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-ghost); text-decoration: none;
+      font-size: 0.875rem; font-weight: 500; letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #BF1F7F; }
+    .nav-cta {
+      padding: 0.5rem 1.25rem;
+      background: var(--gradient);
+      color: #fff !important;
+      border-radius: 100px;
+      font-weight: 600 !important;
+      transition: opacity 0.2s !important;
+    }
+    .nav-cta:hover { opacity: 0.85; color: #fff !important; }
+
+    /* ── HERO ───────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      background: var(--bg-night);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 7rem 2rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    /* Faint watermark text behind everything */
+    .hero::before {
+      content: 'GORILASAURIO';
+      position: absolute;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(6rem, 18vw, 16rem);
+      letter-spacing: 0.05em;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0.06;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+    }
+    .hero-logo {
+      width: clamp(160px, 28vw, 260px);
+      margin-bottom: 2rem;
+      filter: drop-shadow(0 0 40px rgba(191,31,127,0.35));
+      animation: float 5s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-12px); }
+    }
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 9vw, 7rem);
+      letter-spacing: 0.08em;
+      line-height: 1;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+    }
+    .hero-tagline {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: var(--text-ghost);
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+      opacity: 0.75;
+    }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      padding: 0.85rem 2rem;
+      background: var(--gradient);
+      color: #fff;
+      border: none; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(191,31,127,0.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(191,31,127,0.5); }
+    .btn-ghost {
+      padding: 0.85rem 2rem;
+      background: transparent;
+      color: var(--text-ghost);
+      border: 1px solid rgba(191,31,127,0.5);
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem; font-weight: 500;
+      cursor: pointer; text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: #BF1F7F; color: #BF1F7F; }
+
+    /* ── INFO STRIP ─────────────────────────────────────── */
+    .info-strip {
+      background: var(--gradient);
+      padding: 2.5rem 2rem;
+      display: flex; flex-wrap: wrap;
+      justify-content: center; gap: 3rem;
+    }
+    .info-item {
+      display: flex; align-items: center; gap: 1rem;
+      color: #fff;
+    }
+    .info-icon {
+      width: 48px; height: 48px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+    .info-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.7; }
+    .info-value { font-size: 0.95rem; font-weight: 600; margin-top: 0.15rem; }
+
+    /* ── SECTION BASE ───────────────────────────────────── */
+    section { padding: 6rem 2rem; }
+    .container { max-width: 1080px; margin: 0 auto; }
+    .section-eyebrow {
+      font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.15em;
+      background: var(--gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      letter-spacing: 0.04em;
+      color: var(--text-ink);
+      line-height: 1.05;
+    }
+
+    /* ── HORARIOS ───────────────────────────────────────── */
+    #horarios { background: var(--bg-light); }
+    .horarios-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .horario-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid rgba(107,45,176,0.1);
+      position: relative; overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .horario-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(107,45,176,0.12); }
+    .horario-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: var(--gradient);
+    }
+    .horario-time {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem; letter-spacing: 0.05em;
+      background: var(--gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+    .horario-label { margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
+    .horario-dias {
+      margin-top: 1rem;
+      display: flex; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .dia-chip {
+      padding: 0.25rem 0.6rem;
+      background: var(--bg-light);
+      border-radius: 100px;
+      font-size: 0.75rem; font-weight: 600;
+      color: var(--purple-mid);
+    }
+
+    /* ── NOSOTROS ───────────────────────────────────────── */
+    #nosotros .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .about-visual {
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .about-bg-circle {
+      width: 340px; height: 340px;
+      border-radius: 50%;
+      background: var(--gradient);
+      opacity: 0.08;
+      position: absolute;
+    }
+    .about-logo {
+      width: 240px; position: relative; z-index: 1;
+      filter: drop-shadow(0 8px 32px rgba(107,45,176,0.3));
+    }
+    .about-text { margin-top: 1.5rem; color: var(--text-muted); line-height: 1.8; font-size: 1rem; }
+    .about-placeholder {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      border: 1.5px dashed rgba(107,45,176,0.3);
+      border-radius: 12px;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      font-style: italic;
+    }
+
+    /* ── ENTRENADORES ───────────────────────────────────── */
+    #entrenadores { background: var(--bg-night); }
+    #entrenadores .section-title { color: #fff; }
+    #entrenadores .section-eyebrow { margin-bottom: 0.75rem; }
+    .trainers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .trainer-card {
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(191,31,127,0.2);
+      text-align: center;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .trainer-card:hover {
+      border-color: rgba(191,31,127,0.5);
+      background: rgba(255,255,255,0.07);
+    }
+    .trainer-avatar {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      background: var(--gradient);
+      margin: 0 auto 1rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      opacity: 0.5;
+    }
+    .trainer-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem; letter-spacing: 0.05em;
+      color: #fff; margin-bottom: 0.4rem;
+    }
+    .trainer-role { font-size: 0.8rem; color: var(--magenta); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+    .trainer-bio { margin-top: 0.75rem; font-size: 0.85rem; color: rgba(238,232,255,0.5); font-style: italic; }
+
+    /* ── RESERVAS CTA ───────────────────────────────────── */
+    #reservas {
+      background: var(--gradient);
+      text-align: center; padding: 5rem 2rem;
+    }
+    #reservas .section-title { color: #fff; }
+    #reservas .section-eyebrow {
+      background: rgba(255,255,255,0.6);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .reservas-sub { color: rgba(255,255,255,0.75); margin-top: 1rem; font-size: 1rem; margin-bottom: 2rem; }
+    .btn-white {
+      display: inline-block;
+      padding: 0.9rem 2.5rem;
+      background: #fff;
+      color: var(--purple-mid);
+      border-radius: 100px;
+      font-weight: 700; font-size: 0.95rem;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.3); }
+    .coming-soon-badge {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.35rem 1rem;
+      background: rgba(255,255,255,0.15);
+      border-radius: 100px;
+      font-size: 0.75rem; color: rgba(255,255,255,0.7);
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────── */
+    footer {
+      background: var(--bg-night);
+      padding: 3rem 2rem;
+      text-align: center;
+      border-top: 1px solid rgba(191,31,127,0.15);
+    }
+    .footer-logo img { height: 52px; opacity: 0.85; }
+    .footer-links {
+      display: flex; justify-content: center; gap: 2rem;
+      margin: 1.5rem 0; list-style: none; flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--text-ghost); opacity: 0.5;
+      text-decoration: none; font-size: 0.85rem;
+      transition: opacity 0.2s;
+    }
+    .footer-links a:hover { opacity: 1; }
+    .footer-ig {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid rgba(191,31,127,0.4);
+      border-radius: 100px;
+      color: #BF1F7F; text-decoration: none;
+      font-size: 0.85rem; font-weight: 600;
+      transition: background 0.2s;
+    }
+    .footer-ig:hover { background: rgba(191,31,127,0.1); }
+    .footer-copy { margin-top: 1.5rem; font-size: 0.75rem; color: rgba(238,232,255,0.2); }
+
+    /* ── MOBILE ─────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-links { display: none; }
+      #nosotros .container { grid-template-columns: 1fr; }
+      .about-visual { display: none; }
+      .info-strip { gap: 1.5rem; }
+    }
+
+    /* ── REDUCED MOTION ─────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .hero-logo { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <img src="logo.png" alt="Gorilasaurio Gym logo" />
+      <span>GORILASAURIO GYM</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#horarios">Horarios</a></li>
+      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#entrenadores">Entrenadores</a></li>
+      <li><a href="#reservas" class="nav-cta">Reservar hora</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <img class="hero-logo" src="logo.png" alt="Gorilasaurio Gym" />
+    <h1>GORILASAURIO GYM</h1>
+    <p class="hero-tagline">Entrena diferente. Evoluciona.</p>
+    <div class="hero-actions">
+      <a href="#reservas" class="btn-primary">Reservar hora</a>
+      <a href="#nosotros" class="btn-ghost">Conoce el gym</a>
+    </div>
+  </header>
+
+  <!-- INFO STRIP -->
+  <div class="info-strip">
+    <div class="info-item">
+      <div class="info-icon">📍</div>
+      <div>
+        <div class="info-label">Ubicación</div>
+        <div class="info-value">Volcán Chuncaví, Santiago</div>
+      </div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">🕗</div>
+      <div>
+        <div class="info-label">Mañanas</div>
+        <div class="info-value">08:00 – 12:00</div>
+      </div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">🕓</div>
+      <div>
+        <div class="info-label">Tardes</div>
+        <div class="info-value">16:00 – 21:00</div>
+      </div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">📅</div>
+      <div>
+        <div class="info-label">Días</div>
+        <div class="info-value">Lunes a Sábado</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HORARIOS -->
+  <section id="horarios">
+    <div class="container">
+      <p class="section-eyebrow">Planifica tu semana</p>
+      <h2 class="section-title">Horarios de atención</h2>
+      <div class="horarios-grid">
+        <div class="horario-card">
+          <div class="horario-time">08:00 – 12:00</div>
+          <div class="horario-label">Bloque mañana</div>
+          <div class="horario-dias">
+            <span class="dia-chip">Lun</span>
+            <span class="dia-chip">Mar</span>
+            <span class="dia-chip">Mié</span>
+            <span class="dia-chip">Jue</span>
+            <span class="dia-chip">Vie</span>
+            <span class="dia-chip">Sáb</span>
+          </div>
+        </div>
+        <div class="horario-card">
+          <div class="horario-time">16:00 – 21:00</div>
+          <div class="horario-label">Bloque tarde</div>
+          <div class="horario-dias">
+            <span class="dia-chip">Lun</span>
+            <span class="dia-chip">Mar</span>
+            <span class="dia-chip">Mié</span>
+            <span class="dia-chip">Jue</span>
+            <span class="dia-chip">Vie</span>
+            <span class="dia-chip">Sáb</span>
+          </div>
+        </div>
+        <div class="horario-card">
+          <div class="horario-time">Cerrado</div>
+          <div class="horario-label">Día de descanso</div>
+          <div class="horario-dias">
+            <span class="dia-chip">Dom</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOSOTROS -->
+  <section id="nosotros">
+    <div class="container">
+      <div class="about-visual">
+        <div class="about-bg-circle"></div>
+        <img class="about-logo" src="logo.png" alt="Gorilasaurio Gym" />
+      </div>
+      <div>
+        <p class="section-eyebrow">Quiénes somos</p>
+        <h2 class="section-title">Más que un gym,<br/>una comunidad</h2>
+        <p class="about-text">
+          Gorilasaurio Gym nació con una idea simple: que entrenar fuera algo que esperas con ganas, no una obligación. Somos un espacio donde la fuerza, la constancia y la compañía se mezclan para que cada sesión valga la pena.
+        </p>
+        <div class="about-placeholder">
+          ✏️ <strong>Próximamente:</strong> aquí irá una descripción más detallada del gym y su historia.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENTRENADORES -->
+  <section id="entrenadores">
+    <div class="container">
+      <p class="section-eyebrow">El equipo</p>
+      <h2 class="section-title">Entrenadores</h2>
+      <div class="trainers-grid">
+        <!-- Tarjeta 1 -->
+        <div class="trainer-card">
+          <div class="trainer-avatar">🦍</div>
+          <div class="trainer-name">Nombre Entrenador</div>
+          <div class="trainer-role">Especialidad</div>
+          <div class="trainer-bio">Descripción del entrenador próximamente.</div>
+        </div>
+        <!-- Tarjeta 2 -->
+        <div class="trainer-card">
+          <div class="trainer-avatar">🦍</div>
+          <div class="trainer-name">Nombre Entrenador</div>
+          <div class="trainer-role">Especialidad</div>
+          <div class="trainer-bio">Descripción del entrenador próximamente.</div>
+        </div>
+        <!-- Tarjeta 3 -->
+        <div class="trainer-card">
+          <div class="trainer-avatar">🦍</div>
+          <div class="trainer-name">Nombre Entrenador</div>
+          <div class="trainer-role">Especialidad</div>
+          <div class="trainer-bio">Descripción del entrenador próximamente.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESERVAS CTA -->
+  <section id="reservas">
+    <div class="container">
+      <p class="section-eyebrow">¿Listo para empezar?</p>
+      <h2 class="section-title">Reserva tu hora<br/>online</h2>
+      <p class="reservas-sub">Elige el bloque que más te acomode y asegura tu lugar.<br/>Sin filas, sin llamadas.</p>
+      <a href="#" class="btn-white">Reservar ahora</a>
+      <br/>
+      <span class="coming-soon-badge">Sistema de reservas — Muy pronto</span>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">
+      <img src="logo.png" alt="Gorilasaurio Gym" />
+    </div>
+    <ul class="footer-links">
+      <li><a href="#horarios">Horarios</a></li>
+      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#entrenadores">Entrenadores</a></li>
+      <li><a href="#reservas">Reservas</a></li>
+    </ul>
+    <a href="https://www.instagram.com/gorilasauriogym/" target="_blank" rel="noopener" class="footer-ig">
+      <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+      </svg>
+      @gorilasauriogym
+    </a>
+    <p class="footer-copy">© 2025 Gorilasaurio Gym · Volcán Chuncaví, Santiago, Chile</p>
+  </footer>
+
+</body>
+</html>
