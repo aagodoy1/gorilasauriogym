@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Entrenador — Gorilasaurio Gym</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --purple-dark: #3D1A6E;
+      --purple-mid:  #6B2DB0;
+      --magenta:     #BF1F7F;
+      --bg-night:    #0E0720;
+      --bg-card:     #1A0A2E;
+      --bg-input:    rgba(255,255,255,0.05);
+      --text-ghost:  #EEE8FF;
+      --text-muted:  rgba(238,232,255,0.45);
+      --gradient:    linear-gradient(135deg, #3D1A6E 0%, #6B2DB0 55%, #BF1F7F 100%);
+      --success:     #4ADE80;
+      --error:       #F87171;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg-night); color: var(--text-ghost); min-height: 100vh; }
+
+    /* TOPBAR */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(26,10,46,0.95);
+      border-bottom: 1px solid rgba(191,31,127,0.25);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .topbar-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .topbar-logo img { height: 34px; }
+    .topbar-logo span {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.08em;
+      background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .topbar-right { display: flex; align-items: center; gap: 1rem; }
+    .badge-admin {
+      padding: 0.35rem 0.9rem;
+      background: rgba(191,31,127,0.15); border: 1px solid rgba(191,31,127,0.35);
+      border-radius: 100px; font-size: 0.78rem; font-weight: 700;
+      color: var(--magenta); text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .btn-logout {
+      padding: 0.4rem 1rem; background: transparent;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 100px;
+      color: var(--text-muted); font-size: 0.8rem; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: rgba(191,31,127,0.5); color: var(--magenta); }
+
+    /* LAYOUT */
+    .page { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+    /* SEARCH */
+    .search-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(191,31,127,0.2);
+      border-radius: 20px; padding: 2rem;
+      margin-bottom: 2rem; position: relative; overflow: hidden;
+    }
+    .search-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--gradient);
+    }
+    .search-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem;
+      letter-spacing: 0.05em; margin-bottom: 1.25rem;
+      background: var(--gradient); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .search-row { display: flex; gap: 1rem; }
+    .search-input {
+      flex: 1; padding: 0.8rem 1.1rem;
+      background: var(--bg-input); border: 1px solid rgba(191,31,127,0.25);
+      border-radius: 10px; color: #fff; font-size: 1rem;
+      font-family: 'DM Sans', sans-serif; outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--magenta); }
+    .search-input::placeholder { color: rgba(255,255,255,0.2); }
+    .btn-buscar {
+      padding: 0.8rem 1.75rem; background: var(--gradient);
+      color: #fff; border: none; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .btn-buscar:hover { opacity: 0.85; }
+    .btn-buscar:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* CLIENTE INFO */
+    #seccionCliente { display: none; }
+    .cliente-header {
+      background: var(--bg-card); border: 1px solid rgba(107,45,176,0.25);
+      border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 1.25rem;
+    }
+    .cliente-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--gradient); display: flex; align-items: center;
+      justify-content: center; font-size: 1.5rem; flex-shrink: 0;
+    }
+    .cliente-nombre { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.04em; }
+    .cliente-meta { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem; }
+    .cliente-rol {
+      margin-left: auto; padding: 0.35rem 0.9rem;
+      background: rgba(107,45,176,0.2); border: 1px solid rgba(107,45,176,0.4);
+      border-radius: 100px; font-size: 0.75rem; font-weight: 600;
+      color: #A06DE0; text-transform: uppercase;
+    }
+
+    /* GRID DE FORMULARIOS */
+    .forms-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .form-card {
+      background: var(--bg-card); border: 1px solid rgba(107,45,176,0.2);
+      border-radius: 16px; padding: 1.75rem; position: relative; overflow: hidden;
+    }
+    .form-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--gradient);
+    }
+    .form-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.05em;
+      margin-bottom: 1.25rem; color: var(--text-ghost);
+    }
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .input-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .input-group label {
+      font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-muted);
+    }
+    .input-group input, .input-group select {
+      padding: 0.65rem 0.9rem;
+      background: var(--bg-input); border: 1px solid rgba(191,31,127,0.2);
+      border-radius: 8px; color: #fff; font-size: 0.9rem;
+      font-family: 'DM Sans', sans-serif; outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-group input:focus, .input-group select:focus { border-color: var(--magenta); }
+    .input-group select option { background: #1A0A2E; }
+    .btn-guardar {
+      margin-top: 1rem; width: 100%; padding: 0.75rem;
+      background: var(--gradient); color: #fff; border: none;
+      border-radius: 10px; font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-guardar:hover { opacity: 0.85; }
+    .btn-guardar:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* FEEDBACK */
+    .msg { margin-top: 0.75rem; padding: 0.6rem 0.9rem; border-radius: 8px; font-size: 0.82rem; display: none; }
+    .msg-ok { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); color: var(--success); }
+    .msg-err { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: var(--error); }
+
+    /* HISTORIAL */
+    .historial-card {
+      background: var(--bg-card); border: 1px solid rgba(107,45,176,0.2);
+      border-radius: 16px; padding: 1.75rem;
+    }
+    .historial-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;
+      letter-spacing: 0.05em; margin-bottom: 1.25rem;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      text-align: left; padding: 0.6rem 0.75rem;
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-muted);
+      border-bottom: 1px solid rgba(107,45,176,0.2);
+    }
+    td { padding: 0.75rem; border-bottom: 1px solid rgba(107,45,176,0.1); color: var(--text-ghost); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(107,45,176,0.06); }
+    .empty-state { text-align: center; color: var(--text-muted); padding: 2rem; font-style: italic; }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem;
+      padding: 0.9rem 1.5rem; border-radius: 12px;
+      font-weight: 600; font-size: 0.9rem;
+      transform: translateY(100px); opacity: 0;
+      transition: all 0.3s; z-index: 999;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast-ok { background: #16532D; border: 1px solid var(--success); color: var(--success); }
+    .toast-err { background: #450A0A; border: 1px solid var(--error); color: var(--error); }
+
+    @media (max-width: 680px) {
+      .forms-grid { grid-template-columns: 1fr; }
+      .form-grid-2 { grid-template-columns: 1fr; }
+      .search-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <a href="index.html" class="topbar-logo">
+      <img src="logo.png" alt="Gorilasaurio Gym" />
+      <span>GORILASAURIO GYM</span>
+    </a>
+    <div class="topbar-right">
+      <span class="badge-admin">🏋️ Panel Entrenador</span>
+      <button class="btn-logout" id="btnLogout">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <!-- BÚSQUEDA -->
+    <div class="search-card">
+      <div class="search-title">Buscar cliente por RUT</div>
+      <div class="search-row">
+        <input class="search-input" type="text" id="inputBuscarRut" placeholder="19.892.618-3" />
+        <button class="btn-buscar" id="btnBuscar">Buscar</button>
+      </div>
+      <div id="msgBusqueda" class="msg"></div>
+    </div>
+
+    <!-- SECCIÓN CLIENTE (oculta hasta buscar) -->
+    <div id="seccionCliente">
+
+      <!-- HEADER CLIENTE -->
+      <div class="cliente-header">
+        <div class="cliente-avatar">🦍</div>
+        <div>
+          <div class="cliente-nombre" id="clienteNombre">—</div>
+          <div class="cliente-meta" id="clienteMeta">—</div>
+        </div>
+        <div class="cliente-rol" id="clienteRol">Cliente</div>
+      </div>
+
+      <!-- FORMULARIOS -->
+      <div class="forms-grid">
+
+        <!-- MEDICIONES -->
+        <div class="form-card">
+          <div class="form-title">📏 Nueva medición</div>
+          <div class="form-grid-2">
+            <div class="input-group">
+              <label>Peso (kg)</label>
+              <input type="number" step="0.1" id="mPeso" placeholder="82.5" />
+            </div>
+            <div class="input-group">
+              <label>Altura (cm)</label>
+              <input type="number" step="0.1" id="mAltura" placeholder="178" />
+            </div>
+            <div class="input-group">
+              <label>% Grasa</label>
+              <input type="number" step="0.1" id="mGrasa" placeholder="18.5" />
+            </div>
+            <div class="input-group">
+              <label>Masa muscular (kg)</label>
+              <input type="number" step="0.1" id="mMuscular" placeholder="64.2" />
+            </div>
+            <div class="input-group" style="grid-column: 1/-1">
+              <label>Fecha</label>
+              <input type="date" id="mFecha" />
+            </div>
+          </div>
+          <button class="btn-guardar" id="btnGuardarMedicion">Guardar medición</button>
+          <div id="msgMedicion" class="msg"></div>
+        </div>
+
+        <!-- RÉCORD EJERCICIO -->
+        <div class="form-card">
+          <div class="form-title">🏋️ Nuevo récord</div>
+          <div class="form-grid-2">
+            <div class="input-group" style="grid-column: 1/-1">
+              <label>Ejercicio</label>
+              <select id="rEjercicio">
+                <option value="">— Selecciona —</option>
+                <option>Sentadilla</option>
+                <option>Press de banca</option>
+                <option>Peso muerto</option>
+                <option>Press militar</option>
+                <option>Prensa de piernas</option>
+                <option>Curl de bíceps</option>
+                <option>Dominadas</option>
+                <option>Remo con barra</option>
+                <option>Hip thrust</option>
+                <option>Otro</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Peso máximo (kg)</label>
+              <input type="number" step="0.5" id="rPeso" placeholder="120" />
+            </div>
+            <div class="input-group">
+              <label>Fecha</label>
+              <input type="date" id="rFecha" />
+            </div>
+          </div>
+          <button class="btn-guardar" id="btnGuardarRecord">Guardar récord</button>
+          <div id="msgRecord" class="msg"></div>
+        </div>
+
+      </div>
+
+      <!-- HISTORIAL MEDICIONES -->
+      <div class="historial-card">
+        <div class="historial-title">📋 Últimas mediciones</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Peso (kg)</th>
+              <th>Altura (cm)</th>
+              <th>% Grasa</th>
+              <th>Muscular (kg)</th>
+            </tr>
+          </thead>
+          <tbody id="tablaHistorial">
+            <tr><td colspan="5" class="empty-state">Busca un cliente para ver su historial</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL  = 'https://djomlyilfuncqdhyqxgw.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqb21seWlsZnVuY3FkaHlxeGd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTk1OTIsImV4cCI6MjA5OTg5NTU5Mn0.svT1PAczck-ioWVJ58SqlT4H1gL9v3xOVio71eietwE';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    let clienteActual = null;
+
+    // Fecha de hoy por defecto
+    const hoy = new Date().toISOString().split('T')[0];
+    document.getElementById('mFecha').value = hoy;
+    document.getElementById('rFecha').value = hoy;
+
+    // Formato RUT automático
+    document.getElementById('inputBuscarRut').addEventListener('input', function() {
+      let val = this.value.replace(/[^0-9kK]/g, '');
+      if (val.length > 1) {
+        const dv  = val.slice(-1);
+        let num   = val.slice(0, -1);
+        num = num.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        this.value = num + '-' + dv.toUpperCase();
+      }
+    });
+
+    // Toast helper
+    function toast(msg, tipo = 'ok') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast toast-' + tipo + ' show';
+      setTimeout(() => t.className = 'toast', 3000);
+    }
+
+    // Verificar sesión y rol
+    sb.auth.onAuthStateChange(async (event, session) => {
+      if (!session) { window.location.href = 'index.html'; return; }
+
+      const { data: perfil } = await sb.from('perfiles')
+        .select('*').eq('id', session.user.id).single();
+
+      if (!perfil || !['entrenador', 'admin'].includes(perfil.rol)) {
+        alert('No tienes permisos para acceder al panel de entrenador.');
+        window.location.href = 'index.html';
+      }
+    });
+
+    // Cerrar sesión
+    document.getElementById('btnLogout').addEventListener('click', async () => {
+      await sb.auth.signOut();
+      window.location.href = 'index.html';
+    });
+
+    // Buscar cliente por RUT
+    document.getElementById('btnBuscar').addEventListener('click', buscarCliente);
+    document.getElementById('inputBuscarRut').addEventListener('keydown', e => {
+      if (e.key === 'Enter') buscarCliente();
+    });
+
+    async function buscarCliente() {
+      const rut = document.getElementById('inputBuscarRut').value.trim();
+      const msg = document.getElementById('msgBusqueda');
+      if (!rut) return;
+
+      document.getElementById('btnBuscar').disabled = true;
+      document.getElementById('btnBuscar').textContent = 'Buscando...';
+      msg.style.display = 'none';
+
+      const { data: cliente, error } = await sb.from('perfiles')
+        .select('*').eq('rut', rut).single();
+
+      document.getElementById('btnBuscar').disabled = false;
+      document.getElementById('btnBuscar').textContent = 'Buscar';
+
+      if (error || !cliente) {
+        msg.textContent = 'No se encontró ningún cliente con ese RUT.';
+        msg.className = 'msg msg-err';
+        msg.style.display = 'block';
+        document.getElementById('seccionCliente').style.display = 'none';
+        return;
+      }
+
+      clienteActual = cliente;
+      const fecha = new Date(cliente.created_at).toLocaleDateString('es-CL', { month: 'long', year: 'numeric' });
+
+      document.getElementById('clienteNombre').textContent = cliente.nombre;
+      document.getElementById('clienteMeta').textContent = 'RUT ' + cliente.rut + ' · Miembro desde ' + fecha;
+      document.getElementById('clienteRol').textContent = cliente.rol.charAt(0).toUpperCase() + cliente.rol.slice(1);
+      document.getElementById('seccionCliente').style.display = 'block';
+
+      cargarHistorial(cliente.id);
+    }
+
+    // Cargar historial de mediciones
+    async function cargarHistorial(usuarioId) {
+      const { data: mediciones } = await sb.from('mediciones')
+        .select('*').eq('usuario_id', usuarioId)
+        .order('fecha', { ascending: false }).limit(10);
+
+      const tbody = document.getElementById('tablaHistorial');
+      if (!mediciones || mediciones.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Sin mediciones registradas aún</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = mediciones.map(m => `
+        <tr>
+          <td>${new Date(m.fecha + 'T12:00:00').toLocaleDateString('es-CL')}</td>
+          <td>${m.peso_kg ?? '—'}</td>
+          <td>${m.altura_cm ?? '—'}</td>
+          <td>${m.porcentaje_grasa ?? '—'}%</td>
+          <td>${m.masa_muscular_kg ?? '—'}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Guardar medición
+    document.getElementById('btnGuardarMedicion').addEventListener('click', async () => {
+      if (!clienteActual) return;
+      const btn = document.getElementById('btnGuardarMedicion');
+      const msg = document.getElementById('msgMedicion');
+      btn.disabled = true; btn.textContent = 'Guardando...';
+
+      const { error } = await sb.from('mediciones').insert({
+        usuario_id:        clienteActual.id,
+        fecha:             document.getElementById('mFecha').value,
+        peso_kg:           parseFloat(document.getElementById('mPeso').value) || null,
+        altura_cm:         parseFloat(document.getElementById('mAltura').value) || null,
+        porcentaje_grasa:  parseFloat(document.getElementById('mGrasa').value) || null,
+        masa_muscular_kg:  parseFloat(document.getElementById('mMuscular').value) || null,
+      });
+
+      btn.disabled = false; btn.textContent = 'Guardar medición';
+
+      if (error) {
+        msg.textContent = 'Error al guardar: ' + error.message;
+        msg.className = 'msg msg-err'; msg.style.display = 'block';
+      } else {
+        toast('✅ Medición guardada correctamente');
+        msg.style.display = 'none';
+        // Limpiar campos
+        ['mPeso','mAltura','mGrasa','mMuscular'].forEach(id => document.getElementById(id).value = '');
+        cargarHistorial(clienteActual.id);
+      }
+    });
+
+    // Guardar récord
+    document.getElementById('btnGuardarRecord').addEventListener('click', async () => {
+      if (!clienteActual) return;
+      const ejercicio = document.getElementById('rEjercicio').value;
+      const peso      = document.getElementById('rPeso').value;
+      const btn       = document.getElementById('btnGuardarRecord');
+      const msg       = document.getElementById('msgRecord');
+
+      if (!ejercicio || !peso) {
+        msg.textContent = 'Selecciona el ejercicio e ingresa el peso.';
+        msg.className = 'msg msg-err'; msg.style.display = 'block'; return;
+      }
+
+      btn.disabled = true; btn.textContent = 'Guardando...';
+
+      const { error } = await sb.from('records_ejercicio').insert({
+        usuario_id:  clienteActual.id,
+        ejercicio:   ejercicio,
+        peso_max_kg: parseFloat(peso),
+        fecha:       document.getElementById('rFecha').value,
+      });
+
+      btn.disabled = false; btn.textContent = 'Guardar récord';
+
+      if (error) {
+        msg.textContent = 'Error al guardar: ' + error.message;
+        msg.className = 'msg msg-err'; msg.style.display = 'block';
+      } else {
+        toast('✅ Récord guardado correctamente');
+        msg.style.display = 'none';
+        document.getElementById('rEjercicio').value = '';
+        document.getElementById('rPeso').value = '';
+      }
+    });
+  </script>
+</body>
+</html>
