@@ -374,6 +374,15 @@
     .footer-ig:hover { background: rgba(191,31,127,0.1); }
     .footer-copy { margin-top: 1.5rem; font-size: 0.75rem; color: rgba(238,232,255,0.2); }
 
+    .modal-error {
+      background: rgba(248,113,113,0.1);
+      border: 1px solid rgba(248,113,113,0.4);
+      border-radius: 8px;
+      padding: 0.6rem 0.9rem;
+      font-size: 0.82rem;
+      color: #F87171;
+    }
+
     /* ── NAV PERFIL BUTTON ──────────────────────────────── */
     .nav-perfil {
       padding: 0.5rem 1.25rem;
@@ -487,17 +496,19 @@
         <img src="logo.png" alt="Gorilasaurio" />
       </div>
       <h2 class="modal-title">Perfil Saurio</h2>
-      <p class="modal-sub">Ingresa con tu RUT y contraseña</p>
+      <p class="modal-sub">Ingresa con tu email y contraseña</p>
       <div class="modal-form">
+        <div id="loginError" class="modal-error" style="display:none"></div>
         <div class="input-group">
-          <label>RUT</label>
-          <input type="text" id="inputRut" placeholder="12.345.678-9" />
+          <label>Email</label>
+          <input type="email" id="inputEmail" placeholder="tucorreo@gmail.com" />
         </div>
         <div class="input-group">
           <label>Contraseña</label>
           <input type="password" id="inputPass" placeholder="••••••••" />
         </div>
         <button class="btn-primary btn-full" id="btnLogin">Ingresar</button>
+        <p class="modal-hint">¿No tienes cuenta? <a href="registro.html" style="color:#BF1F7F">Regístrate aquí</a></p>
         <p class="modal-hint">¿Olvidaste tu contraseña? Habla con tu entrenador.</p>
       </div>
     </div>
@@ -670,7 +681,13 @@
     <p class="footer-copy">© 2025 Gorilasaurio Gym · Volcán Chuncaví, Santiago, Chile</p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    const SUPABASE_URL  = 'https://djomlyilfuncqdhyqxgw.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqb21seWlsZnVuY3FkaHlxeGd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTk1OTIsImV4cCI6MjA5OTg5NTU5Mn0.svT1PAczck-ioWVJ58SqlT4H1gL9v3xOVio71eietwE';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    // Modal
     const modal = document.getElementById('modalLogin');
     document.getElementById('btnAbrirLogin').addEventListener('click', e => {
       e.preventDefault();
@@ -682,12 +699,40 @@
     modal.addEventListener('click', e => {
       if (e.target === modal) modal.style.display = 'none';
     });
-    document.getElementById('btnLogin').addEventListener('click', () => {
-      const rut = document.getElementById('inputRut').value.trim();
-      const pass = document.getElementById('inputPass').value.trim();
-      if (!rut || !pass) { alert('Ingresa tu RUT y contraseña'); return; }
-      // Por ahora redirige al perfil de demo
+
+    // Login con Supabase
+    document.getElementById('btnLogin').addEventListener('click', async () => {
+      const email = document.getElementById('inputEmail').value.trim();
+      const pass  = document.getElementById('inputPass').value.trim();
+      const errDiv = document.getElementById('loginError');
+
+      if (!email || !pass) {
+        errDiv.textContent = 'Por favor ingresa tu email y contraseña.';
+        errDiv.style.display = 'block'; return;
+      }
+
+      const btn = document.getElementById('btnLogin');
+      btn.textContent = 'Ingresando...'; btn.disabled = true;
+
+      const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+
+      if (error) {
+        errDiv.textContent = 'Email o contraseña incorrectos.';
+        errDiv.style.display = 'block';
+        btn.textContent = 'Ingresar'; btn.disabled = false;
+        return;
+      }
+
       window.location.href = 'perfil.html';
+    });
+
+    // Si ya está logueado, mostrar nombre en navbar
+    sb.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        const navCta = document.getElementById('btnAbrirLogin');
+        navCta.textContent = '🦍 Mi Perfil';
+        navCta.href = 'perfil.html';
+      }
     });
   </script>
 </body>

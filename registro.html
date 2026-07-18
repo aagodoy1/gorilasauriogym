@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crear cuenta — Gorilasaurio Gym</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --purple-dark: #3D1A6E;
+      --purple-mid:  #6B2DB0;
+      --magenta:     #BF1F7F;
+      --bg-night:    #0E0720;
+      --bg-card:     #1A0A2E;
+      --text-ghost:  #EEE8FF;
+      --gradient:    linear-gradient(135deg, #3D1A6E 0%, #6B2DB0 55%, #BF1F7F 100%);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-night);
+      color: var(--text-ghost);
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    /* Fondo decorativo */
+    body::before {
+      content: 'GORILASAURIO';
+      position: fixed;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 15vw, 13rem);
+      background: var(--gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0.04;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid rgba(191,31,127,0.25);
+      border-radius: 24px;
+      padding: 2.5rem;
+      width: 100%; max-width: 480px;
+      position: relative; z-index: 1;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--gradient);
+      border-radius: 24px 24px 0 0;
+    }
+
+    .logo-wrap { text-align: center; margin-bottom: 1.5rem; }
+    .logo-wrap img {
+      height: 72px;
+      filter: drop-shadow(0 0 24px rgba(191,31,127,0.4));
+    }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem; letter-spacing: 0.06em;
+      background: var(--gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center; margin-bottom: 0.25rem;
+    }
+    .subtitle {
+      text-align: center;
+      color: rgba(238,232,255,0.45);
+      font-size: 0.875rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Form */
+    .form { display: flex; flex-direction: column; gap: 1rem; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .input-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .input-group label {
+      font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: rgba(238,232,255,0.5);
+    }
+    .input-group input {
+      padding: 0.75rem 1rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(191,31,127,0.2);
+      border-radius: 10px;
+      color: #fff; font-size: 0.95rem;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .input-group input:focus {
+      border-color: #BF1F7F;
+      background: rgba(191,31,127,0.05);
+    }
+    .input-group input::placeholder { color: rgba(255,255,255,0.18); }
+
+    .btn-submit {
+      margin-top: 0.5rem;
+      padding: 0.9rem;
+      background: var(--gradient);
+      color: #fff; border: none;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(191,31,127,0.35);
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(191,31,127,0.5); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .hint {
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(238,232,255,0.3);
+      margin-top: 0.75rem;
+    }
+    .hint a { color: #BF1F7F; text-decoration: none; }
+    .hint a:hover { text-decoration: underline; }
+
+    .error-box {
+      background: rgba(248,113,113,0.1);
+      border: 1px solid rgba(248,113,113,0.35);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      color: #F87171;
+      display: none;
+    }
+    .success-box {
+      background: rgba(74,222,128,0.1);
+      border: 1px solid rgba(74,222,128,0.35);
+      border-radius: 10px;
+      padding: 1.25rem;
+      font-size: 0.9rem;
+      color: #4ADE80;
+      text-align: center;
+      display: none;
+    }
+    .success-box strong { display: block; font-size: 1.1rem; margin-bottom: 0.4rem; }
+
+    .divider {
+      height: 1px;
+      background: rgba(107,45,176,0.2);
+      margin: 0.5rem 0;
+    }
+    .section-label {
+      font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: rgba(191,31,127,0.7);
+      margin-bottom: -0.25rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="logo-wrap">
+      <img src="logo.png" alt="Gorilasaurio Gym" />
+    </div>
+    <h1>Crear Perfil Saurio</h1>
+    <p class="subtitle">Completa tus datos para registrarte en el gym</p>
+
+    <div class="form">
+      <div id="errorBox" class="error-box"></div>
+      <div id="successBox" class="success-box">
+        <strong>¡Registro exitoso! 🦍</strong>
+        Revisa tu email para confirmar tu cuenta y luego inicia sesión.
+      </div>
+
+      <!-- Datos personales -->
+      <p class="section-label">Datos personales</p>
+      <div class="row">
+        <div class="input-group">
+          <label>Nombre</label>
+          <input type="text" id="inputNombre" placeholder="Juan" />
+        </div>
+        <div class="input-group">
+          <label>Apellido</label>
+          <input type="text" id="inputApellido" placeholder="Pérez" />
+        </div>
+      </div>
+      <div class="input-group">
+        <label>RUT</label>
+        <input type="text" id="inputRut" placeholder="12.345.678-9" />
+      </div>
+      <div class="input-group">
+        <label>Teléfono</label>
+        <input type="tel" id="inputTelefono" placeholder="+56 9 1234 5678" />
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Credenciales -->
+      <p class="section-label">Acceso</p>
+      <div class="input-group">
+        <label>Email</label>
+        <input type="email" id="inputEmail" placeholder="tucorreo@gmail.com" />
+      </div>
+      <div class="input-group">
+        <label>Contraseña</label>
+        <input type="password" id="inputPass" placeholder="Mínimo 8 caracteres" />
+      </div>
+      <div class="input-group">
+        <label>Confirmar contraseña</label>
+        <input type="password" id="inputPass2" placeholder="Repite tu contraseña" />
+      </div>
+
+      <button class="btn-submit" id="btnRegistrar">Crear mi cuenta</button>
+      <p class="hint">¿Ya tienes cuenta? <a href="index.html">Inicia sesión aquí</a></p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL  = 'https://djomlyilfuncqdhyqxgw.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqb21seWlsZnVuY3FkaHlxeGd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTk1OTIsImV4cCI6MjA5OTg5NTU5Mn0.svT1PAczck-ioWVJ58SqlT4H1gL9v3xOVio71eietwE';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    // Formatea RUT automáticamente mientras escribe
+    document.getElementById('inputRut').addEventListener('input', function() {
+      let val = this.value.replace(/[^0-9kK]/g, '');
+      if (val.length > 1) {
+        const dv  = val.slice(-1);
+        let num   = val.slice(0, -1);
+        num = num.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        this.value = num + '-' + dv;
+      }
+    });
+
+    document.getElementById('btnRegistrar').addEventListener('click', async () => {
+      const nombre   = document.getElementById('inputNombre').value.trim();
+      const apellido = document.getElementById('inputApellido').value.trim();
+      const rut      = document.getElementById('inputRut').value.trim();
+      const telefono = document.getElementById('inputTelefono').value.trim();
+      const email    = document.getElementById('inputEmail').value.trim();
+      const pass     = document.getElementById('inputPass').value;
+      const pass2    = document.getElementById('inputPass2').value;
+
+      const errBox  = document.getElementById('errorBox');
+      const succBox = document.getElementById('successBox');
+      errBox.style.display = 'none';
+
+      // Validaciones
+      if (!nombre || !apellido || !rut || !email || !pass) {
+        errBox.textContent = 'Por favor completa todos los campos obligatorios.';
+        errBox.style.display = 'block'; return;
+      }
+      if (pass.length < 8) {
+        errBox.textContent = 'La contraseña debe tener al menos 8 caracteres.';
+        errBox.style.display = 'block'; return;
+      }
+      if (pass !== pass2) {
+        errBox.textContent = 'Las contraseñas no coinciden.';
+        errBox.style.display = 'block'; return;
+      }
+
+      const btn = document.getElementById('btnRegistrar');
+      btn.textContent = 'Creando cuenta...'; btn.disabled = true;
+
+      // 1) Crear usuario en Supabase Auth
+      const { data, error } = await sb.auth.signUp({
+        email,
+        password: pass,
+        options: {
+          data: { nombre, apellido } // metadata extra
+        }
+      });
+
+      if (error) {
+        errBox.textContent = error.message === 'User already registered'
+          ? 'Ya existe una cuenta con ese email.'
+          : 'Error al crear la cuenta: ' + error.message;
+        errBox.style.display = 'block';
+        btn.textContent = 'Crear mi cuenta'; btn.disabled = false;
+        return;
+      }
+
+      // 2) Insertar perfil en la tabla perfiles
+      if (data.user) {
+        await sb.from('perfiles').insert({
+          id:       data.user.id,
+          rut:      rut,
+          nombre:   nombre + ' ' + apellido,
+          telefono: telefono,
+          rol:      'cliente'
+        });
+      }
+
+      // Mostrar éxito
+      document.querySelector('.form').style.opacity = '0.3';
+      document.querySelector('.form').style.pointerEvents = 'none';
+      succBox.style.display = 'block';
+    });
+  </script>
+</body>
+</html>
