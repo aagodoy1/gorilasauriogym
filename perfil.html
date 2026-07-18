@@ -401,17 +401,9 @@
     });
 
     // Cargar datos reales del usuario
-    async function cargarPerfil() {
-      const { data: { session } } = await sb.auth.getSession();
-
-      // Si no hay sesión, redirigir al inicio
-      if (!session) {
-        window.location.href = 'index.html';
-        return;
-      }
-
+    async function cargarPerfil(session) {
       // Leer perfil desde la tabla perfiles
-      const { data: perfil } = await sb.from('perfiles')
+      const { data: perfil, error } = await sb.from('perfiles')
         .select('*')
         .eq('id', session.user.id)
         .single();
@@ -424,10 +416,21 @@
         document.getElementById('perfilNombre').textContent = perfil.nombre;
         document.getElementById('perfilMeta').textContent =
           'RUT ' + perfil.rut + ' · Miembro desde ' + fechaInscripcion + ' · Entrenador: [Por asignar]';
+      } else {
+        document.getElementById('perfilNombre').textContent = session.user.email;
+        document.getElementById('chipNombre').textContent = '🦍 Usuario';
+        document.getElementById('perfilMeta').textContent = 'Perfil en configuración';
       }
     }
 
-    cargarPerfil();
+    // Espera a que Supabase inicialice la sesión correctamente
+    sb.auth.onAuthStateChange(async (event, session) => {
+      if (session) {
+        await cargarPerfil(session);
+      } else if (event === 'SIGNED_OUT' || event === 'INITIAL_SESSION') {
+        window.location.href = 'index.html';
+      }
+    });
 
     // Configuración base de Chart.js para tema oscuro
     Chart.defaults.color = 'rgba(238,232,255,0.4)';
