@@ -247,8 +247,8 @@
       <span>GORILASAURIO GYM</span>
     </a>
     <div class="topbar-right">
-      <div class="user-chip">🦍 Juan Saurio</div>
-      <button class="btn-logout" onclick="window.location.href='index.html'">Cerrar sesión</button>
+      <div class="user-chip" id="chipNombre">🦍 Cargando...</div>
+      <button class="btn-logout" id="btnLogout">Cerrar sesión</button>
     </div>
   </header>
 
@@ -258,8 +258,8 @@
     <div class="perfil-hero">
       <div class="avatar">🦍</div>
       <div class="perfil-info">
-        <h1>Juan Pérez</h1>
-        <div class="perfil-meta">RUT 12.345.678-9 · Miembro desde Enero 2024 · Entrenador: [Nombre]</div>
+        <h1 id="perfilNombre">Cargando...</h1>
+        <div class="perfil-meta" id="perfilMeta">...</div>
       </div>
       <div class="perfil-badge">⚡ Saurio Veterano</div>
     </div>
@@ -388,7 +388,47 @@
 
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    const SUPABASE_URL  = 'https://djomlyilfuncqdhyqxgw.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqb21seWlsZnVuY3FkaHlxeGd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTk1OTIsImV4cCI6MjA5OTg5NTU5Mn0.svT1PAczck-ioWVJ58SqlT4H1gL9v3xOVio71eietwE';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    // Cerrar sesión
+    document.getElementById('btnLogout').addEventListener('click', async () => {
+      await sb.auth.signOut();
+      window.location.href = 'index.html';
+    });
+
+    // Cargar datos reales del usuario
+    async function cargarPerfil() {
+      const { data: { session } } = await sb.auth.getSession();
+
+      // Si no hay sesión, redirigir al inicio
+      if (!session) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Leer perfil desde la tabla perfiles
+      const { data: perfil } = await sb.from('perfiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+
+      if (perfil) {
+        const nombreCorto = perfil.nombre.split(' ')[0];
+        const fechaInscripcion = new Date(perfil.created_at).toLocaleDateString('es-CL', { month: 'long', year: 'numeric' });
+
+        document.getElementById('chipNombre').textContent = '🦍 ' + nombreCorto;
+        document.getElementById('perfilNombre').textContent = perfil.nombre;
+        document.getElementById('perfilMeta').textContent =
+          'RUT ' + perfil.rut + ' · Miembro desde ' + fechaInscripcion + ' · Entrenador: [Por asignar]';
+      }
+    }
+
+    cargarPerfil();
+
     // Configuración base de Chart.js para tema oscuro
     Chart.defaults.color = 'rgba(238,232,255,0.4)';
     Chart.defaults.borderColor = 'rgba(107,45,176,0.15)';
