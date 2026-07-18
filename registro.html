@@ -269,12 +269,13 @@
       const btn = document.getElementById('btnRegistrar');
       btn.textContent = 'Creando cuenta...'; btn.disabled = true;
 
-      // 1) Crear usuario en Supabase Auth
+      // Crear usuario con todos los datos como metadata
+      // El trigger en Supabase crea el perfil automáticamente al confirmar email
       const { data, error } = await sb.auth.signUp({
         email,
         password: pass,
         options: {
-          data: { nombre, apellido } // metadata extra
+          data: { nombre, apellido, rut, telefono }
         }
       });
 
@@ -285,17 +286,6 @@
         errBox.style.display = 'block';
         btn.textContent = 'Crear mi cuenta'; btn.disabled = false;
         return;
-      }
-
-      // 2) Insertar perfil en la tabla perfiles
-      if (data.user) {
-        await sb.from('perfiles').insert({
-          id:       data.user.id,
-          rut:      rut,
-          nombre:   nombre + ' ' + apellido,
-          telefono: telefono,
-          rol:      'cliente'
-        });
       }
 
       // Mostrar éxito
