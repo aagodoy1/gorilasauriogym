@@ -484,7 +484,24 @@
       <li><a href="#nosotros">Nosotros</a></li>
       <li><a href="#entrenadores">Entrenadores</a></li>
       <li><a href="#reservas" class="nav-cta">Reservar hora</a></li>
-      <li><a href="#" class="nav-perfil" id="btnAbrirLogin">🦍 Perfil Saurio</a></li>
+      <!-- Estado: no logueado -->
+      <li id="navNoSession">
+        <a href="registro.html" class="nav-perfil" style="border-color:rgba(191,31,127,0.3)">Crear cuenta</a>
+      </li>
+      <li id="navNoSession2">
+        <a href="#" class="nav-cta" id="btnAbrirLogin">Iniciar sesión</a>
+      </li>
+      <!-- Estado: cliente logueado -->
+      <li id="navCliente" style="display:none">
+        <a href="perfil.html" class="nav-perfil">🦍 Mi Perfil</a>
+      </li>
+      <!-- Estado: entrenador/admin logueado -->
+      <li id="navAdmin" style="display:none">
+        <a href="perfil.html" class="nav-perfil">🦍 Mi Perfil</a>
+      </li>
+      <li id="navAdmin2" style="display:none">
+        <a href="admin.html" class="nav-cta">⚙️ Panel Admin</a>
+      </li>
     </ul>
   </nav>
 
@@ -723,15 +740,34 @@
         return;
       }
 
-      window.location.href = 'perfil.html';
+      // Leer rol para redirigir al lugar correcto
+      const { data: perfil } = await sb.from('perfiles')
+        .select('rol').eq('id', data.user.id).single();
+      if (perfil && ['entrenador', 'admin'].includes(perfil.rol)) {
+        window.location.href = 'perfil.html'; // el entrenador también va a su perfil
+      } else {
+        window.location.href = 'perfil.html';
+      }
     });
 
-    // Si ya está logueado, mostrar nombre en navbar
-    sb.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        const navCta = document.getElementById('btnAbrirLogin');
-        navCta.textContent = '🦍 Mi Perfil';
-        navCta.href = 'perfil.html';
+    // Detectar sesión y rol para mostrar navbar correcto
+    sb.auth.onAuthStateChange(async (event, session) => {
+      if (!session) return; // no logueado, navbar por defecto
+
+      const { data: perfil } = await sb.from('perfiles')
+        .select('rol, nombre').eq('id', session.user.id).single();
+
+      // Ocultar botones de no-sesión
+      document.getElementById('navNoSession').style.display  = 'none';
+      document.getElementById('navNoSession2').style.display = 'none';
+
+      if (perfil && ['entrenador', 'admin'].includes(perfil.rol)) {
+        // Entrenador/admin: Mi Perfil + Panel Admin
+        document.getElementById('navAdmin').style.display  = 'list-item';
+        document.getElementById('navAdmin2').style.display = 'list-item';
+      } else {
+        // Cliente: solo Mi Perfil
+        document.getElementById('navCliente').style.display = 'list-item';
       }
     });
   </script>

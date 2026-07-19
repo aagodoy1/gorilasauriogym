@@ -59,6 +59,15 @@
       font-size: 0.85rem; font-weight: 600;
       color: #BF1F7F;
     }
+    .btn-admin {
+      padding: 0.4rem 1rem;
+      background: var(--gradient);
+      border-radius: 100px;
+      color: #fff; font-size: 0.8rem; font-weight: 700;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn-admin:hover { opacity: 0.85; }
     .btn-logout {
       padding: 0.4rem 1rem;
       background: transparent;
@@ -247,6 +256,7 @@
       <span>GORILASAURIO GYM</span>
     </a>
     <div class="topbar-right">
+      <a href="admin.html" id="btnPanelAdmin" class="btn-admin" style="display:none">⚙️ Panel Admin</a>
       <div class="user-chip" id="chipNombre">🦍 Cargando...</div>
       <button class="btn-logout" id="btnLogout">Cerrar sesión</button>
     </div>
@@ -261,7 +271,7 @@
         <h1 id="perfilNombre">Cargando...</h1>
         <div class="perfil-meta" id="perfilMeta">...</div>
       </div>
-      <div class="perfil-badge">⚡ Saurio Veterano</div>
+      <div class="perfil-badge" id="perfilBadge">⚡ Saurio Veterano</div>
     </div>
 
     <div class="placeholder-banner">
@@ -416,6 +426,12 @@
         document.getElementById('perfilNombre').textContent = perfil.nombre;
         document.getElementById('perfilMeta').textContent =
           'RUT ' + perfil.rut + ' · Miembro desde ' + fechaInscripcion + ' · Entrenador: [Por asignar]';
+
+        // Mostrar botón Panel Admin si es entrenador o admin
+        if (['entrenador', 'admin'].includes(perfil.rol)) {
+          document.getElementById('btnPanelAdmin').style.display = 'inline-block';
+          document.getElementById('perfilBadge').textContent = '🏋️ Entrenador';
+        }
       } else {
         document.getElementById('perfilNombre').textContent = session.user.email;
         document.getElementById('chipNombre').textContent = '🦍 Usuario';
