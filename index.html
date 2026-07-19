@@ -195,6 +195,39 @@
       line-height: 1.05;
     }
 
+
+    /* ── SERVICIOS ──────────────────────────────────────────── */
+    #servicios { background: #fff; }
+    .servicios-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .servicio-card {
+      border-radius: 16px; padding: 1.75rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .servicio-card:hover { transform: translateY(-4px); }
+    .servicio-primary {
+      background: var(--bg-night);
+      border: 1px solid rgba(191,31,127,0.25);
+    }
+    .servicio-secondary {
+      background: var(--bg-light);
+      border: 1px solid rgba(107,45,176,0.15);
+    }
+    .servicio-icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
+    .servicio-nombre {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; letter-spacing: 0.04em;
+      margin-bottom: 0.5rem;
+    }
+    .servicio-primary .servicio-nombre { color: #fff; }
+    .servicio-secondary .servicio-nombre { color: var(--text-ink); }
+    .servicio-desc { font-size: 0.85rem; line-height: 1.6; }
+    .servicio-primary .servicio-desc { color: rgba(238,232,255,0.55); }
+    .servicio-secondary .servicio-desc { color: var(--text-muted); }
+
     /* ── HORARIOS ───────────────────────────────────────── */
     #horarios { background: var(--bg-light); }
     .horarios-grid {
@@ -484,6 +517,7 @@
     </a>
     <ul class="nav-links">
       <li><a href="#horarios">Horarios</a></li>
+      <li><a href="#servicios">Servicios</a></li>
       <li><a href="#nosotros">Nosotros</a></li>
       <li><a href="#entrenadores">Entrenadores</a></li>
       <li><a href="#reservas" class="nav-cta">Reservar hora</a></li>
@@ -584,26 +618,26 @@
       <h2 class="section-title">Horarios de atención</h2>
       <div class="horarios-grid">
         <div class="horario-card">
-          <div class="horario-time">08:00 – 12:00</div>
-          <div class="horario-label">Bloque mañana</div>
+          <div class="horario-time">09:00 – 14:00</div>
+          <div class="horario-label">Bloque mañana · Bloque tarde 17:00 – 20:30</div>
           <div class="horario-dias">
             <span class="dia-chip">Lun</span>
             <span class="dia-chip">Mar</span>
             <span class="dia-chip">Mié</span>
             <span class="dia-chip">Jue</span>
-            <span class="dia-chip">Vie</span>
-            <span class="dia-chip">Sáb</span>
           </div>
         </div>
         <div class="horario-card">
-          <div class="horario-time">16:00 – 21:00</div>
-          <div class="horario-label">Bloque tarde</div>
+          <div class="horario-time">09:00 – 14:00</div>
+          <div class="horario-label">Solo bloque mañana</div>
           <div class="horario-dias">
-            <span class="dia-chip">Lun</span>
-            <span class="dia-chip">Mar</span>
-            <span class="dia-chip">Mié</span>
-            <span class="dia-chip">Jue</span>
             <span class="dia-chip">Vie</span>
+          </div>
+        </div>
+        <div class="horario-card">
+          <div class="horario-time">10:00 – 14:00</div>
+          <div class="horario-label">Solo bloque mañana</div>
+          <div class="horario-dias">
             <span class="dia-chip">Sáb</span>
           </div>
         </div>
@@ -618,12 +652,63 @@
     </div>
   </section>
 
+
+  <!-- SERVICIOS -->
+  <section id="servicios">
+    <div class="container">
+      <p class="section-eyebrow">Lo que ofrecemos</p>
+      <h2 class="section-title">Servicios</h2>
+
+      <p style="color:var(--text-muted);margin-top:0.5rem;margin-bottom:2.5rem;max-width:560px;">
+        Entrenamiento personalizado con seguimiento real, diseñado para que evoluciones a tu ritmo.
+      </p>
+
+      <p style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--magenta);margin-bottom:1rem;">Servicios principales</p>
+      <div class="servicios-grid">
+        <div class="servicio-card servicio-primary">
+          <div class="servicio-icon">💪</div>
+          <div class="servicio-nombre">Hipertrofia</div>
+          <div class="servicio-desc">Programas de entrenamiento enfocados en el desarrollo muscular, con periodización y progresión estructurada.</div>
+        </div>
+        <div class="servicio-card servicio-primary">
+          <div class="servicio-icon">🏋️</div>
+          <div class="servicio-nombre">Aumento de fuerza</div>
+          <div class="servicio-desc">Entrenamiento basado en movimientos compuestos y progresión de carga para maximizar tu fuerza.</div>
+        </div>
+        <div class="servicio-card servicio-primary">
+          <div class="servicio-icon">📊</div>
+          <div class="servicio-nombre">Seguimiento 1 a 1</div>
+          <div class="servicio-desc">Monitoreo continuo de tus métricas: peso, composición corporal, récords y evolución en el tiempo.</div>
+        </div>
+      </div>
+
+      <p style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--purple-mid);margin-top:2.5rem;margin-bottom:1rem;">Servicios adicionales</p>
+      <div class="servicios-grid servicios-secundarios">
+        <div class="servicio-card servicio-secondary">
+          <div class="servicio-icon">🧘</div>
+          <div class="servicio-nombre">Meditación</div>
+          <div class="servicio-desc">Sesiones de mindfulness y control mental para complementar tu entrenamiento físico.</div>
+        </div>
+        <div class="servicio-card servicio-secondary">
+          <div class="servicio-icon">🩺</div>
+          <div class="servicio-nombre">Reintegración deportiva</div>
+          <div class="servicio-desc">Planes adaptados para volver al entrenamiento después de lesiones o períodos de inactividad.</div>
+        </div>
+        <div class="servicio-card servicio-secondary">
+          <div class="servicio-icon">🏠</div>
+          <div class="servicio-nombre">Servicio a domicilio</div>
+          <div class="servicio-desc">Entrenamiento en tu hogar con la misma calidad y seguimiento que en el gym.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- NOSOTROS -->
   <section id="nosotros">
     <div class="container">
       <div class="about-visual">
         <div class="about-bg-circle"></div>
-        <img class="about-logo" src="logo.png" alt="Gorilasaurio Gym" />
+        <img class="about-logo" src="fondo_gym.png" alt="Sé mejor que ayer — Gorilasaurio Gym" style="border-radius:16px;object-fit:cover;width:320px;height:380px;" />
       </div>
       <div>
         <p class="section-eyebrow">Quiénes somos</p>
@@ -644,26 +729,23 @@
       <p class="section-eyebrow">El equipo</p>
       <h2 class="section-title">Entrenadores</h2>
       <div class="trainers-grid">
-        <!-- Tarjeta 1 -->
+        <!-- Rodrigo Mundaca -->
         <div class="trainer-card">
           <div class="trainer-avatar">🦍</div>
-          <div class="trainer-name">Nombre Entrenador</div>
-          <div class="trainer-role">Especialidad</div>
-          <div class="trainer-bio">Descripción del entrenador próximamente.</div>
+          <div class="trainer-name">Rodrigo Mundaca</div>
+          <div class="trainer-role">Entrenador Personal</div>
+          <div class="trainer-bio" style="color:rgba(238,232,255,0.65);font-style:normal;font-size:0.82rem;line-height:1.6;margin-top:0.75rem;">
+            🎓 Licenciado en Pedagogía en Educación Física · Universidad Mayor, Chile<br/><br/>
+            🏅 Certificación Personal Trainer · Escuela de Culturismo Natural, España<br/><br/>
+            Especialista en hipertrofia, fuerza y seguimiento 1 a 1.
+          </div>
         </div>
-        <!-- Tarjeta 2 -->
+        <!-- Placeholder 2 -->
         <div class="trainer-card">
-          <div class="trainer-avatar">🦍</div>
-          <div class="trainer-name">Nombre Entrenador</div>
-          <div class="trainer-role">Especialidad</div>
-          <div class="trainer-bio">Descripción del entrenador próximamente.</div>
-        </div>
-        <!-- Tarjeta 3 -->
-        <div class="trainer-card">
-          <div class="trainer-avatar">🦍</div>
-          <div class="trainer-name">Nombre Entrenador</div>
-          <div class="trainer-role">Especialidad</div>
-          <div class="trainer-bio">Descripción del entrenador próximamente.</div>
+          <div class="trainer-avatar" style="opacity:0.3">🦍</div>
+          <div class="trainer-name" style="opacity:0.4">Próximamente</div>
+          <div class="trainer-role" style="opacity:0.3">—</div>
+          <div class="trainer-bio">Nuevos entrenadores próximamente.</div>
         </div>
       </div>
     </div>
@@ -688,6 +770,7 @@
     </div>
     <ul class="footer-links">
       <li><a href="#horarios">Horarios</a></li>
+      <li><a href="#servicios">Servicios</a></li>
       <li><a href="#nosotros">Nosotros</a></li>
       <li><a href="#entrenadores">Entrenadores</a></li>
       <li><a href="#reservas">Reservas</a></li>
