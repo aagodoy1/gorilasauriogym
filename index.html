@@ -520,14 +520,17 @@
       <li><a href="#servicios">Servicios</a></li>
       <li><a href="#nosotros">Nosotros</a></li>
       <li><a href="#entrenadores">Entrenadores</a></li>
+      <!-- OCULTO TEMPORALMENTE - descomentar cuando se active el sistema de reservas
       <li><a href="#reservas" class="nav-cta">Reservar hora</a></li>
-      <!-- Estado: no logueado -->
+      -->
+      <!-- OCULTO TEMPORALMENTE - descomentar cuando se active el Perfil Saurio
       <li id="navNoSession">
         <a href="registro.html" class="nav-perfil" style="border-color:rgba(191,31,127,0.3)">Crear cuenta</a>
       </li>
       <li id="navNoSession2">
         <a href="#" class="nav-cta" id="btnAbrirLogin">Iniciar sesión</a>
       </li>
+      -->
       <!-- Estado: cliente logueado -->
       <li id="navCliente" style="display:none">
         <a href="perfil.html" class="nav-perfil">🦍 Mi Perfil</a>
@@ -574,7 +577,9 @@
     <h1>GORILASAURIO GYM</h1>
     <p class="hero-tagline">Entrena diferente. Evoluciona.</p>
     <div class="hero-actions">
+      <!-- OCULTO TEMPORALMENTE
       <a href="#reservas" class="btn-primary">Reservar hora</a>
+      -->
       <a href="#nosotros" class="btn-ghost">Conoce el gym</a>
     </div>
   </header>
@@ -619,8 +624,12 @@
       <div class="horarios-grid">
         <div class="horario-card">
           <div class="horario-time">09:00 – 14:00</div>
-          <div class="horario-label">Bloque mañana · Bloque tarde 17:00 – 20:30</div>
-          <div class="horario-dias">
+          <div class="horario-label">Bloque mañana</div>
+          <div style="margin-top:0.75rem;border-top:1px solid rgba(107,45,176,0.15);padding-top:0.75rem;">
+            <div class="horario-time">17:00 – 20:30</div>
+            <div class="horario-label">Bloque tarde</div>
+          </div>
+          <div class="horario-dias" style="margin-top:0.75rem;">
             <span class="dia-chip">Lun</span>
             <span class="dia-chip">Mar</span>
             <span class="dia-chip">Mié</span>
@@ -716,9 +725,7 @@
         <p class="about-text">
           Gorilasaurio Gym nació con una idea simple: que entrenar fuera algo que esperas con ganas, no una obligación. Somos un espacio donde la fuerza, la constancia y la compañía se mezclan para que cada sesión valga la pena.
         </p>
-        <div class="about-placeholder">
-          ✏️ <strong>Próximamente:</strong> aquí irá una descripción más detallada del gym y su historia.
-        </div>
+
       </div>
     </div>
   </section>
