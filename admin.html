@@ -82,6 +82,25 @@
     }
     .search-input:focus { border-color: var(--magenta); }
     .search-input::placeholder { color: rgba(255,255,255,0.2); }
+    .autocomplete-list {
+      position: fixed;
+      background: #1A0A2E;
+      border: 1px solid rgba(191,31,127,0.35);
+      border-radius: 10px; z-index: 9999;
+      max-height: 220px; overflow-y: auto;
+      display: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      min-width: 300px;
+    }
+    .autocomplete-item {
+      padding: 0.75rem 1rem; cursor: pointer;
+      font-size: 0.9rem; color: var(--text-ghost);
+      border-bottom: 1px solid rgba(107,45,176,0.1);
+      transition: background 0.15s;
+    }
+    .autocomplete-item:last-child { border-bottom: none; }
+    .autocomplete-item:hover { background: rgba(191,31,127,0.12); }
+    .autocomplete-item span { color: rgba(238,232,255,0.4); font-size: 0.8rem; margin-left: 0.5rem; }
     .btn-buscar {
       padding: 0.8rem 1.75rem; background: var(--gradient);
       color: #fff; border: none; border-radius: 10px;
@@ -216,10 +235,13 @@
 
     <!-- BÚSQUEDA -->
     <div class="search-card">
-      <div class="search-title">Buscar cliente por RUT</div>
-      <div class="search-row">
-        <input class="search-input" type="text" id="inputBuscarRut" placeholder="19.892.618-3" />
-        <button class="btn-buscar" id="btnBuscar">Buscar</button>
+      <div class="search-title">Buscar cliente</div>
+      <div class="search-row" style="position:relative;">
+        <div style="flex:1;position:relative;">
+          <input class="search-input" type="text" id="inputBuscarNombre"
+            placeholder="Escribe el nombre del cliente..." autocomplete="off" />
+          <div id="autocompleteList" class="autocomplete-list"></div>
+        </div>
       </div>
       <div id="msgBusqueda" class="msg"></div>
     </div>
@@ -246,25 +268,22 @@
           <div class="form-grid-2">
             <div class="input-group">
               <label>Peso (kg)</label>
-              <input type="number" step="0.1" id="mPeso" placeholder="82.5" />
+              <input type="number" step="0.1" min="30" max="150" id="mPeso" placeholder="—" />
+              <span id="mPesoHint" style="font-size:0.7rem;color:rgba(238,232,255,0.3);margin-top:0.2rem;"></span>
             </div>
             <div class="input-group">
               <label>Altura (cm)</label>
-              <input type="number" step="0.1" id="mAltura" placeholder="178" />
-            </div>
-            <div class="input-group">
-              <label>% Grasa</label>
-              <input type="number" step="0.1" id="mGrasa" placeholder="18.5" />
-            </div>
-            <div class="input-group">
-              <label>Masa muscular (kg)</label>
-              <input type="number" step="0.1" id="mMuscular" placeholder="64.2" />
+              <input type="number" step="1" min="100" max="210" id="mAltura" placeholder="—" />
+              <span id="mAlturaHint" style="font-size:0.7rem;color:rgba(238,232,255,0.3);margin-top:0.2rem;"></span>
             </div>
             <div class="input-group" style="grid-column: 1/-1">
               <label>Fecha</label>
               <input type="date" id="mFecha" />
             </div>
           </div>
+          <p style="font-size:0.75rem;color:rgba(238,232,255,0.3);margin-top:0.5rem;font-style:italic;">
+            Peso y altura se precargan desde la última medición. Puedes modificarlos si es necesario.
+          </p>
           <button class="btn-guardar" id="btnGuardarMedicion">Guardar medición</button>
           <div id="msgMedicion" class="msg"></div>
         </div>
@@ -291,7 +310,7 @@
             </div>
             <div class="input-group">
               <label>Peso máximo (kg)</label>
-              <input type="number" step="0.5" id="rPeso" placeholder="120" />
+              <input type="number" step="0.1" min="0" max="250" id="rPeso" placeholder="120" />
             </div>
             <div class="input-group">
               <label>Fecha</label>
@@ -313,8 +332,6 @@
               <th>Fecha</th>
               <th>Peso (kg)</th>
               <th>Altura (cm)</th>
-              <th>% Grasa</th>
-              <th>Muscular (kg)</th>
             </tr>
           </thead>
           <tbody id="tablaHistorial">
@@ -342,15 +359,67 @@
     document.getElementById('mFecha').value = hoy;
     document.getElementById('rFecha').value = hoy;
 
-    // Formato RUT automático
-    document.getElementById('inputBuscarRut').addEventListener('input', function() {
-      let val = this.value.replace(/[^0-9kK]/g, '');
-      if (val.length > 1) {
-        const dv  = val.slice(-1);
-        let num   = val.slice(0, -1);
-        num = num.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        this.value = num + '-' + dv.toUpperCase();
+    // Autocomplete por nombre
+    let todosLosClientes = [];
+
+    async function cargarTodosLosClientes() {
+      const { data } = await sb.from('perfiles')
+        .select('id, nombre, rut, rol, telefono, created_at')
+        .order('nombre', { ascending: true });
+      if (data) todosLosClientes = data;
+    }
+    cargarTodosLosClientes();
+
+    const inputNombre   = document.getElementById('inputBuscarNombre');
+    const listaAuto     = document.getElementById('autocompleteList');
+
+    function posicionarLista() {
+      const rect = inputNombre.getBoundingClientRect();
+      listaAuto.style.top  = (rect.bottom + 4) + 'px';
+      listaAuto.style.left = rect.left + 'px';
+      listaAuto.style.width = rect.width + 'px';
+    }
+
+    inputNombre.addEventListener('input', function() {
+      const query = this.value.trim().toLowerCase();
+      listaAuto.innerHTML = '';
+
+      if (query.length < 2) { listaAuto.style.display = 'none'; return; }
+
+      const coincidencias = todosLosClientes.filter(c =>
+        c.nombre.toLowerCase().includes(query)
+      );
+
+      if (coincidencias.length === 0) {
+        listaAuto.style.display = 'none'; return;
       }
+
+      coincidencias.forEach(cliente => {
+        const item = document.createElement('div');
+        item.className = 'autocomplete-item';
+        item.innerHTML = cliente.nombre + '<span>(' + cliente.rut + ')</span>';
+        item.addEventListener('click', () => {
+          inputNombre.value = cliente.nombre;
+          listaAuto.style.display = 'none';
+          seleccionarCliente(cliente);
+        });
+        listaAuto.appendChild(item);
+      });
+
+      posicionarLista();
+      listaAuto.style.display = 'block';
+    });
+
+    window.addEventListener('scroll', () => {
+      if (listaAuto.style.display === 'block') posicionarLista();
+    });
+    window.addEventListener('resize', () => {
+      if (listaAuto.style.display === 'block') posicionarLista();
+    });
+
+    // Cerrar lista al hacer click fuera
+    document.addEventListener('click', e => {
+      if (!inputNombre.contains(e.target)) listaAuto.style.display = 'none';
     });
 
     // Toast helper
@@ -380,35 +449,8 @@
       window.location.href = 'index.html';
     });
 
-    // Buscar cliente por RUT
-    document.getElementById('btnBuscar').addEventListener('click', buscarCliente);
-    document.getElementById('inputBuscarRut').addEventListener('keydown', e => {
-      if (e.key === 'Enter') buscarCliente();
-    });
-
-    async function buscarCliente() {
-      const rut = document.getElementById('inputBuscarRut').value.trim();
-      const msg = document.getElementById('msgBusqueda');
-      if (!rut) return;
-
-      document.getElementById('btnBuscar').disabled = true;
-      document.getElementById('btnBuscar').textContent = 'Buscando...';
-      msg.style.display = 'none';
-
-      const { data: cliente, error } = await sb.from('perfiles')
-        .select('*').eq('rut', rut).single();
-
-      document.getElementById('btnBuscar').disabled = false;
-      document.getElementById('btnBuscar').textContent = 'Buscar';
-
-      if (error || !cliente) {
-        msg.textContent = 'No se encontró ningún cliente con ese RUT.';
-        msg.className = 'msg msg-err';
-        msg.style.display = 'block';
-        document.getElementById('seccionCliente').style.display = 'none';
-        return;
-      }
-
+    // Seleccionar cliente desde autocomplete
+    async function seleccionarCliente(cliente) {
       clienteActual = cliente;
       const fecha = new Date(cliente.created_at).toLocaleDateString('es-CL', { month: 'long', year: 'numeric' });
 
@@ -416,8 +458,38 @@
       document.getElementById('clienteMeta').textContent = 'RUT ' + cliente.rut + ' · Miembro desde ' + fecha;
       document.getElementById('clienteRol').textContent = cliente.rol.charAt(0).toUpperCase() + cliente.rol.slice(1);
       document.getElementById('seccionCliente').style.display = 'block';
+      document.getElementById('msgBusqueda').style.display = 'none';
 
+      await recargarSugerencias(cliente.id);
       cargarHistorial(cliente.id);
+    }
+
+    // Recargar sugerencias de peso y altura desde la última medición
+    async function recargarSugerencias(usuarioId) {
+      const { data: ultima } = await sb.from('mediciones')
+        .select('altura_cm, peso_kg').eq('usuario_id', usuarioId)
+        .order('fecha', { ascending: false }).limit(1).single();
+
+      const inputAltura = document.getElementById('mAltura');
+      const hintAltura  = document.getElementById('mAlturaHint');
+      const inputPeso   = document.getElementById('mPeso');
+      const hintPeso    = document.getElementById('mPesoHint');
+
+      if (ultima?.altura_cm) {
+        inputAltura.value = ultima.altura_cm;
+        hintAltura.textContent = '↑ Último registro: ' + ultima.altura_cm + ' cm';
+      } else {
+        inputAltura.value = '';
+        hintAltura.textContent = 'Sin registro previo';
+      }
+
+      if (ultima?.peso_kg) {
+        inputPeso.value = ultima.peso_kg;
+        hintPeso.textContent = '↑ Último registro: ' + ultima.peso_kg + ' kg';
+      } else {
+        inputPeso.value = '';
+        hintPeso.textContent = 'Sin registro previo';
+      }
     }
 
     // Cargar historial de mediciones
@@ -428,17 +500,15 @@
 
       const tbody = document.getElementById('tablaHistorial');
       if (!mediciones || mediciones.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Sin mediciones registradas aún</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Sin mediciones registradas aún</td></tr>';
         return;
       }
 
       tbody.innerHTML = mediciones.map(m => `
         <tr>
           <td>${new Date(m.fecha + 'T12:00:00').toLocaleDateString('es-CL')}</td>
-          <td>${m.peso_kg ?? '—'}</td>
-          <td>${m.altura_cm ?? '—'}</td>
-          <td>${m.porcentaje_grasa ?? '—'}%</td>
-          <td>${m.masa_muscular_kg ?? '—'}</td>
+          <td>${m.peso_kg ?? '—'} kg</td>
+          <td>${m.altura_cm ?? '—'} cm</td>
         </tr>
       `).join('');
     }
@@ -448,15 +518,26 @@
       if (!clienteActual) return;
       const btn = document.getElementById('btnGuardarMedicion');
       const msg = document.getElementById('msgMedicion');
+
+      const peso   = parseFloat(document.getElementById('mPeso').value);
+      const altura = parseFloat(document.getElementById('mAltura').value);
+
+      if (!peso || peso < 30 || peso > 150) {
+        msg.textContent = 'El peso debe estar entre 30 y 150 kg.';
+        msg.className = 'msg msg-err'; msg.style.display = 'block'; return;
+      }
+      if (!altura || altura < 100 || altura > 210) {
+        msg.textContent = 'La altura debe estar entre 100 y 210 cm.';
+        msg.className = 'msg msg-err'; msg.style.display = 'block'; return;
+      }
+
       btn.disabled = true; btn.textContent = 'Guardando...';
 
       const { error } = await sb.from('mediciones').insert({
-        usuario_id:        clienteActual.id,
-        fecha:             document.getElementById('mFecha').value,
-        peso_kg:           parseFloat(document.getElementById('mPeso').value) || null,
-        altura_cm:         parseFloat(document.getElementById('mAltura').value) || null,
-        porcentaje_grasa:  parseFloat(document.getElementById('mGrasa').value) || null,
-        masa_muscular_kg:  parseFloat(document.getElementById('mMuscular').value) || null,
+        usuario_id: clienteActual.id,
+        fecha:      document.getElementById('mFecha').value,
+        peso_kg:    parseFloat(document.getElementById('mPeso').value) || null,
+        altura_cm:  parseFloat(document.getElementById('mAltura').value) || null,
       });
 
       btn.disabled = false; btn.textContent = 'Guardar medición';
@@ -467,8 +548,8 @@
       } else {
         toast('✅ Medición guardada correctamente');
         msg.style.display = 'none';
-        // Limpiar campos
-        ['mPeso','mAltura','mGrasa','mMuscular'].forEach(id => document.getElementById(id).value = '');
+        // Recargar historial y sugerencias con los nuevos datos
+        await recargarSugerencias(clienteActual.id);
         cargarHistorial(clienteActual.id);
       }
     });
@@ -481,8 +562,12 @@
       const btn       = document.getElementById('btnGuardarRecord');
       const msg       = document.getElementById('msgRecord');
 
-      if (!ejercicio || !peso) {
-        msg.textContent = 'Selecciona el ejercicio e ingresa el peso.';
+      if (!ejercicio) {
+        msg.textContent = 'Selecciona el ejercicio.';
+        msg.className = 'msg msg-err'; msg.style.display = 'block'; return;
+      }
+      if (!peso || parseFloat(peso) < 0 || parseFloat(peso) > 250) {
+        msg.textContent = 'El peso debe estar entre 0 y 250 kg.';
         msg.className = 'msg msg-err'; msg.style.display = 'block'; return;
       }
 
