@@ -304,10 +304,10 @@
       font-style: italic;
     }
 
-    /* ── ENTRENADORES ───────────────────────────────────── */
-    #entrenadores { background: var(--bg-night); }
-    #entrenadores .section-title { color: #fff; }
-    #entrenadores .section-eyebrow { margin-bottom: 0.75rem; }
+    /* ── ENTRENADOR ─────────────────────────────────────── */
+    #entrenador { background: var(--bg-night); }
+    #entrenador .section-title { color: #fff; }
+    #entrenador .section-eyebrow { margin-bottom: 0.75rem; }
     .trainers-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -519,16 +519,18 @@
       <li><a href="#horarios">Horarios</a></li>
       <li><a href="#servicios">Servicios</a></li>
       <li><a href="#nosotros">Nosotros</a></li>
-      <li><a href="#entrenadores">Entrenadores</a></li>
+      <li><a href="#entrenador">Entrenador</a></li>
       <!-- OCULTO TEMPORALMENTE - descomentar cuando se active el sistema de reservas
       <li><a href="#reservas" class="nav-cta">Reservar hora</a></li>
       -->
+      <!-- OCULTO TEMPORALMENTE - descomentar cuando se publique el sistema de login/registro en main
       <li id="navNoSession">
         <a href="registro.html" class="nav-perfil" style="border-color:rgba(191,31,127,0.3)">Crear cuenta</a>
       </li>
       <li id="navNoSession2">
         <a href="#" class="nav-cta" id="btnAbrirLogin">Iniciar sesión</a>
       </li>
+      -->
       <!-- Estado: cliente logueado -->
       <li id="navCliente" style="display:none">
         <a href="perfil.html" class="nav-perfil">🦍 Mi Perfil</a>
@@ -575,8 +577,10 @@
     <h1>GORILASAURIO GYM</h1>
     <p class="hero-tagline">Entrena diferente. Evoluciona.</p>
     <div class="hero-actions">
+      <!-- OCULTO TEMPORALMENTE - descomentar cuando se active el sistema de reservas online
       <a href="#reservas" class="btn-primary">Reservar hora</a>
-      <a href="#nosotros" class="btn-ghost">Conoce el gym</a>
+      -->
+      <a href="#nosotros" class="btn-primary">Conoce el gym</a>
     </div>
   </header>
 
@@ -586,14 +590,14 @@
       <div class="info-icon">📍</div>
       <div>
         <div class="info-label">Ubicación</div>
-        <div class="info-value">Volcán Chuncaví, Santiago</div>
+        <div class="info-value">Volcán Longav, Peñalolén</div>
       </div>
     </div>
     <div class="info-item">
       <div class="info-icon">🕗</div>
       <div>
         <div class="info-label">Mañanas</div>
-        <div class="info-value">09:00 – 14:00</div>
+        <div class="info-value">09:00 – 13:30</div>
       </div>
     </div>
     <div class="info-item">
@@ -619,7 +623,7 @@
       <h2 class="section-title">Horarios de atención</h2>
       <div class="horarios-grid">
         <div class="horario-card">
-          <div class="horario-time">09:00 – 14:00</div>
+          <div class="horario-time">09:00 – 13:30</div>
           <div class="horario-label">Bloque mañana</div>
           <div style="margin-top:0.75rem;border-top:1px solid rgba(107,45,176,0.15);padding-top:0.75rem;">
             <div class="horario-time">17:00 – 20:30</div>
@@ -633,7 +637,7 @@
           </div>
         </div>
         <div class="horario-card">
-          <div class="horario-time">09:00 – 14:00</div>
+          <div class="horario-time">09:00 – 13:30</div>
           <div class="horario-label">Solo bloque mañana</div>
           <div class="horario-dias">
             <span class="dia-chip">Vie</span>
@@ -664,45 +668,49 @@
       <p class="section-eyebrow">Lo que ofrecemos</p>
       <h2 class="section-title">Servicios</h2>
 
-      <p style="color:var(--text-muted);margin-top:0.5rem;margin-bottom:2.5rem;max-width:560px;">
+      <p style="color:var(--text-muted);margin-top:0.5rem;margin-bottom:1rem;max-width:560px;">
         Entrenamiento personalizado con seguimiento real, diseñado para que evoluciones a tu ritmo.
+      </p>
+
+      <p style="font-size:0.85rem;color:var(--purple-mid);font-weight:600;margin-bottom:2.5rem;">
+        Público objetivo: entre 14 y 80 años (sin patologías incapacitantes).
       </p>
 
       <p style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--magenta);margin-bottom:1rem;">Servicios principales</p>
       <div class="servicios-grid">
         <div class="servicio-card servicio-primary">
+          <div class="servicio-icon">🧑‍🤝‍🧑</div>
+          <div class="servicio-nombre">Clases personalizadas</div>
+          <div class="servicio-desc">Clases de máximo 2 personas, 100% personalizadas a tu nivel y objetivos.</div>
+        </div>
+        <div class="servicio-card servicio-primary">
           <div class="servicio-icon">💪</div>
-          <div class="servicio-nombre">Hipertrofia</div>
-          <div class="servicio-desc">Programas de entrenamiento enfocados en el desarrollo muscular, con periodización y progresión estructurada.</div>
+          <div class="servicio-nombre">Hipertrofia y fuerza</div>
+          <div class="servicio-desc">Programa que combina hipertrofia y fuerza. Incluye opción de seguimiento 1 a 1 online.</div>
         </div>
         <div class="servicio-card servicio-primary">
-          <div class="servicio-icon">🏋️</div>
-          <div class="servicio-nombre">Aumento de fuerza</div>
-          <div class="servicio-desc">Entrenamiento basado en movimientos compuestos y progresión de carga para maximizar tu fuerza.</div>
-        </div>
-        <div class="servicio-card servicio-primary">
-          <div class="servicio-icon">📊</div>
-          <div class="servicio-nombre">Seguimiento 1 a 1</div>
-          <div class="servicio-desc">Monitoreo continuo de tus métricas: peso, composición corporal, récords y evolución en el tiempo.</div>
+          <div class="servicio-icon">📉</div>
+          <div class="servicio-nombre">Disminución de % de grasa</div>
+          <div class="servicio-desc">Planes de entrenamiento enfocados en bajar tu porcentaje de grasa corporal de forma sostenida.</div>
         </div>
       </div>
 
       <p style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--purple-mid);margin-top:2.5rem;margin-bottom:1rem;">Servicios adicionales</p>
       <div class="servicios-grid servicios-secundarios">
         <div class="servicio-card servicio-secondary">
-          <div class="servicio-icon">🧘</div>
-          <div class="servicio-nombre">Meditación</div>
-          <div class="servicio-desc">Sesiones de mindfulness y control mental para complementar tu entrenamiento físico.</div>
-        </div>
-        <div class="servicio-card servicio-secondary">
-          <div class="servicio-icon">🩺</div>
-          <div class="servicio-nombre">Reintegración deportiva</div>
-          <div class="servicio-desc">Planes adaptados para volver al entrenamiento después de lesiones o períodos de inactividad.</div>
-        </div>
-        <div class="servicio-card servicio-secondary">
           <div class="servicio-icon">🏠</div>
           <div class="servicio-nombre">Servicio a domicilio</div>
           <div class="servicio-desc">Entrenamiento en tu hogar con la misma calidad y seguimiento que en el gym.</div>
+        </div>
+        <div class="servicio-card servicio-secondary">
+          <div class="servicio-icon">📋</div>
+          <div class="servicio-nombre">Pauta de entrenamiento</div>
+          <div class="servicio-desc">Venta de rutina de entrenamiento personalizada, sin seguimiento. Ideal si prefieres entrenar por tu cuenta.</div>
+        </div>
+        <div class="servicio-card servicio-secondary">
+          <div class="servicio-icon">🤝</div>
+          <div class="servicio-nombre">Acompañamiento a gimnasio</div>
+          <div class="servicio-desc">Vamos contigo a tu gimnasio y te mostramos qué máquinas y pesos usar.</div>
         </div>
       </div>
     </div>
@@ -717,20 +725,21 @@
       </div>
       <div>
         <p class="section-eyebrow">Quiénes somos</p>
-        <h2 class="section-title">Más que un gym,<br/>una comunidad</h2>
+        <h2 class="section-title">Más que un gym,<br/>es mi pasión</h2>
         <p class="about-text">
-          Gorilasaurio Gym nació con una idea simple: que entrenar fuera algo que esperas con ganas, no una obligación. Somos un espacio donde la fuerza, la constancia y la compañía se mezclan para que cada sesión valga la pena.
+          Gorilasaurio nació de la necesidad de entregar un servicio profesional y eficaz a personas comunes y corrientes que quieren cambiar sus hábitos, su cuerpo y su salud.<br/><br/>
+          Somos un espacio donde respetamos tu nivel y trabajamos desde ese punto en adelante: no necesitas tener experiencia, solo ganas de un cambio.
         </p>
 
       </div>
     </div>
   </section>
 
-  <!-- ENTRENADORES -->
-  <section id="entrenadores">
+  <!-- ENTRENADOR -->
+  <section id="entrenador">
     <div class="container">
-      <p class="section-eyebrow">El equipo</p>
-      <h2 class="section-title">Entrenadores</h2>
+      <p class="section-eyebrow">Tu entrenador</p>
+      <h2 class="section-title">Entrenador</h2>
       <div class="trainers-grid">
         <!-- Rodrigo Mundaca -->
         <div class="trainer-card">
@@ -742,13 +751,6 @@
             🏅 Certificación Personal Trainer · Escuela de Culturismo Natural, España<br/><br/>
             Especialista en hipertrofia, fuerza y seguimiento 1 a 1.
           </div>
-        </div>
-        <!-- Placeholder 2 -->
-        <div class="trainer-card">
-          <div class="trainer-avatar" style="opacity:0.3">🦍</div>
-          <div class="trainer-name" style="opacity:0.4">Próximamente</div>
-          <div class="trainer-role" style="opacity:0.3">—</div>
-          <div class="trainer-bio">Nuevos entrenadores próximamente.</div>
         </div>
       </div>
     </div>
@@ -777,16 +779,26 @@
       <li><a href="#horarios">Horarios</a></li>
       <li><a href="#servicios">Servicios</a></li>
       <li><a href="#nosotros">Nosotros</a></li>
-      <li><a href="#entrenadores">Entrenadores</a></li>
+      <li><a href="#entrenador">Entrenador</a></li>
+      <!-- OCULTO TEMPORALMENTE - descomentar cuando se active el sistema de reservas online
       <li><a href="#reservas">Reservas</a></li>
+      -->
     </ul>
-    <a href="https://www.instagram.com/gorilasauriogym/" target="_blank" rel="noopener" class="footer-ig">
-      <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-      </svg>
-      @gorilasauriogym
-    </a>
-    <p class="footer-copy">© 2025 Gorilasaurio Gym · Volcán Chuncaví, Santiago, Chile</p>
+    <div class="footer-contact" style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;">
+      <a href="https://www.instagram.com/gorilasauriogym/" target="_blank" rel="noopener" class="footer-ig">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
+        @gorilasauriogym
+      </a>
+      <a href="https://wa.me/56934419548" target="_blank" rel="noopener" class="footer-ig">
+        💬 +56 9 3441 9548
+      </a>
+      <a href="mailto:gimnasiogorilasaurio@gmail.com" class="footer-ig">
+        ✉️ gimnasiogorilasaurio@gmail.com
+      </a>
+    </div>
+    <p class="footer-copy">© 2026 Gorilasaurio Gym · Volcán Longav, Peñalolén, Santiago, Chile</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -795,12 +807,15 @@
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqb21seWlsZnVuY3FkaHlxeGd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTk1OTIsImV4cCI6MjA5OTg5NTU5Mn0.svT1PAczck-ioWVJ58SqlT4H1gL9v3xOVio71eietwE';
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-    // Modal
+    // Modal (botón de apertura oculto temporalmente junto con login/registro)
     const modal = document.getElementById('modalLogin');
-    document.getElementById('btnAbrirLogin').addEventListener('click', e => {
-      e.preventDefault();
-      modal.classList.add('abierto');
-    });
+    const btnAbrirLogin = document.getElementById('btnAbrirLogin');
+    if (btnAbrirLogin) {
+      btnAbrirLogin.addEventListener('click', e => {
+        e.preventDefault();
+        modal.classList.add('abierto');
+      });
+    }
     document.getElementById('btnCerrarLogin').addEventListener('click', () => {
       modal.classList.remove('abierto');
     });
@@ -848,9 +863,11 @@
       const { data: perfil } = await sb.from('perfiles')
         .select('rol, nombre').eq('id', session.user.id).single();
 
-      // Ocultar botones de no-sesión
-      document.getElementById('navNoSession').style.display  = 'none';
-      document.getElementById('navNoSession2').style.display = 'none';
+      // Ocultar botones de no-sesión (si están visibles)
+      const nns1 = document.getElementById('navNoSession');
+      const nns2 = document.getElementById('navNoSession2');
+      if (nns1) nns1.style.display = 'none';
+      if (nns2) nns2.style.display = 'none';
 
       if (perfil && ['entrenador', 'admin'].includes(perfil.rol)) {
         // Entrenador/admin: Mi Perfil + Panel Admin

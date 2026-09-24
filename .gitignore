@@ -1,0 +1,8 @@
+# Ignorar cualquier archivo .json en el proyecto
+*.json
+
+# Carpetas específicas a ignorar
+database_schema/
+graphify-out/
+node_modules/
+supabase/
