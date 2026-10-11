@@ -182,6 +182,7 @@
     .historial-card {
       background: var(--bg-card); border: 1px solid rgba(107,45,176,0.2);
       border-radius: 16px; padding: 1.75rem;
+      margin-bottom: 1.5rem;
     }
     .historial-title {
       font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;
@@ -199,6 +200,73 @@
     tr:hover td { background: rgba(107,45,176,0.06); }
     .empty-state { text-align: center; color: var(--text-muted); padding: 2rem; font-style: italic; }
 
+    /* HISTORIAL POR EJERCICIO */
+    .ej-toolbar {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem;
+    }
+    .ej-toolbar .input-group { min-width: 240px; }
+    .ej-resumen { font-size: 0.85rem; color: var(--text-muted); }
+    .ej-resumen strong { color: var(--text-ghost); font-weight: 600; }
+    .chart-wrap { position: relative; height: 280px; margin-bottom: 1.5rem; }
+    .var-up   { color: var(--success); font-weight: 600; }
+    .var-down { color: var(--error);   font-weight: 600; }
+    .var-eq   { color: var(--text-muted); }
+
+    /* BOTÓN BORRAR */
+    th.col-accion, td.col-accion { text-align: right; width: 1%; white-space: nowrap; }
+    .btn-borrar {
+      padding: 0.3rem 0.75rem; background: transparent;
+      border: 1px solid rgba(248,113,113,0.3); border-radius: 8px;
+      color: var(--error); font-size: 0.75rem; font-weight: 600;
+      font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-borrar:hover { background: rgba(248,113,113,0.12); border-color: var(--error); }
+
+    /* MODAL DE CONFIRMACIÓN */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 10000;
+      background: rgba(6,2,14,0.8); backdrop-filter: blur(3px);
+      display: none; align-items: center; justify-content: center; padding: 1.5rem;
+    }
+    .modal-overlay.abierto { display: flex; }
+    .modal-card {
+      width: 100%; max-width: 460px;
+      background: var(--bg-card); border: 1px solid rgba(248,113,113,0.35);
+      border-radius: 16px; padding: 1.75rem; position: relative; overflow: hidden;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+    }
+    .modal-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #7f1d1d, var(--error));
+    }
+    .modal-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;
+      letter-spacing: 0.05em; margin-bottom: 0.9rem; color: var(--error);
+    }
+    .modal-texto { font-size: 0.92rem; line-height: 1.55; color: var(--text-ghost); margin-bottom: 1.1rem; }
+    .modal-texto strong { color: #fff; }
+    .modal-confirm-label { display: block; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+    .modal-confirm-label strong { color: var(--text-ghost); }
+    .modal-input {
+      width: 100%; padding: 0.65rem 0.9rem;
+      background: var(--bg-input); border: 1px solid rgba(248,113,113,0.3);
+      border-radius: 8px; color: #fff; font-size: 0.95rem;
+      font-family: 'DM Sans', sans-serif; outline: none;
+    }
+    .modal-input:focus { border-color: var(--error); }
+    .modal-actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
+    .btn-cancelar, .btn-confirmar-borrar {
+      flex: 1; padding: 0.7rem; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .btn-cancelar { background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--text-ghost); }
+    .btn-cancelar:hover { border-color: rgba(255,255,255,0.35); }
+    .btn-confirmar-borrar { background: #B91C1C; border: none; color: #fff; }
+    .btn-confirmar-borrar:hover:not(:disabled) { opacity: 0.85; }
+    .btn-confirmar-borrar:disabled { opacity: 0.35; cursor: not-allowed; }
+
     /* TOAST */
     .toast {
       position: fixed; bottom: 2rem; right: 2rem;
@@ -215,6 +283,7 @@
       .forms-grid { grid-template-columns: 1fr; }
       .form-grid-2 { grid-template-columns: 1fr; }
       .search-row { flex-direction: column; }
+      .chart-wrap { height: 220px; }
     }
   </style>
 </head>
@@ -332,10 +401,44 @@
               <th>Fecha</th>
               <th>Peso (kg)</th>
               <th>Altura (cm)</th>
+              <th class="col-accion"></th>
             </tr>
           </thead>
           <tbody id="tablaHistorial">
-            <tr><td colspan="5" class="empty-state">Busca un cliente para ver su historial</td></tr>
+            <tr><td colspan="4" class="empty-state">Busca un cliente para ver su historial</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- HISTORIAL POR EJERCICIO -->
+      <div class="historial-card">
+        <div class="historial-title">📈 Evolución por ejercicio</div>
+
+        <div class="ej-toolbar">
+          <div class="input-group">
+            <label>Ejercicio</label>
+            <select id="verEjercicio">
+              <option value="">— Selecciona un ejercicio —</option>
+            </select>
+          </div>
+          <div class="ej-resumen" id="ejResumen"></div>
+        </div>
+
+        <div class="chart-wrap" id="chartWrap" style="display:none;">
+          <canvas id="chartEjercicio"></canvas>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Peso máx (kg)</th>
+              <th>Variación</th>
+              <th class="col-accion"></th>
+            </tr>
+          </thead>
+          <tbody id="tablaRecords">
+            <tr><td colspan="4" class="empty-state">Selecciona un ejercicio para ver su historial</td></tr>
           </tbody>
         </table>
       </div>
@@ -343,9 +446,31 @@
     </div>
   </main>
 
+  <!-- MODAL CONFIRMAR BORRADO -->
+  <div class="modal-overlay" id="modalBorrar">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalBorrarTitulo">
+      <div class="modal-title" id="modalBorrarTitulo">⚠️ Confirmar borrado</div>
+      <p class="modal-texto">
+        ¿Está seguro de que desea borrar el registro de
+        <strong id="mbPersona"></strong>, sobre su
+        <strong id="mbTipo"></strong> de la fecha
+        <strong id="mbFecha"></strong>?
+        Esta acción no se puede deshacer.
+      </p>
+      <label class="modal-confirm-label" for="mbInput">Escribe <strong>si</strong> para confirmar:</label>
+      <input class="modal-input" type="text" id="mbInput" autocomplete="off" />
+      <div id="mbMsg" class="msg"></div>
+      <div class="modal-actions">
+        <button class="btn-cancelar" id="mbCancelar" type="button">Cancelar</button>
+        <button class="btn-confirmar-borrar" id="mbConfirmar" type="button" disabled>Borrar registro</button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL  = 'https://djomlyilfuncqdhyqxgw.supabase.co';
@@ -353,11 +478,21 @@
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
     let clienteActual = null;
+    let chartEjercicio = null;
+    let cacheMediciones = {};
+    let cacheRecords = {};
+    let borrarPendiente = null; // { tabla, id }
 
     // Fecha de hoy por defecto
     const hoy = new Date().toISOString().split('T')[0];
     document.getElementById('mFecha').value = hoy;
     document.getElementById('rFecha').value = hoy;
+
+    // Poblar el selector de "Evolución por ejercicio" con la misma lista del formulario de récords
+    const selVerEjercicio = document.getElementById('verEjercicio');
+    Array.from(document.getElementById('rEjercicio').options).forEach(o => {
+      if (o.value !== '') selVerEjercicio.appendChild(new Option(o.value, o.value));
+    });
 
     // Autocomplete por nombre
     let todosLosClientes = [];
@@ -462,6 +597,8 @@
 
       await recargarSugerencias(cliente.id);
       cargarHistorial(cliente.id);
+      // Si ya había un ejercicio seleccionado, se muestra el de este cliente
+      cargarRecordsEjercicio(cliente.id, selVerEjercicio.value);
     }
 
     // Recargar sugerencias de peso y altura desde la última medición
@@ -500,18 +637,227 @@
 
       const tbody = document.getElementById('tablaHistorial');
       if (!mediciones || mediciones.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Sin mediciones registradas aún</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Sin mediciones registradas aún</td></tr>';
         return;
       }
+
+      cacheMediciones = {};
+      mediciones.forEach(m => { cacheMediciones[m.id] = m; });
 
       tbody.innerHTML = mediciones.map(m => `
         <tr>
           <td>${new Date(m.fecha + 'T12:00:00').toLocaleDateString('es-CL')}</td>
           <td>${m.peso_kg ?? '—'} kg</td>
           <td>${m.altura_cm ?? '—'} cm</td>
+          <td class="col-accion"><button class="btn-borrar" data-tabla="mediciones" data-id="${m.id}">🗑 Borrar</button></td>
         </tr>
       `).join('');
     }
+
+    // ── EVOLUCIÓN POR EJERCICIO ─────────────────────────────
+    function limpiarVistaEjercicio(mensaje) {
+      if (chartEjercicio) { chartEjercicio.destroy(); chartEjercicio = null; }
+      document.getElementById('chartWrap').style.display = 'none';
+      document.getElementById('ejResumen').innerHTML = '';
+      document.getElementById('tablaRecords').innerHTML =
+        '<tr><td colspan="4" class="empty-state">' + mensaje + '</td></tr>';
+    }
+
+    function formatoKg(n) {
+      return Number(n).toLocaleString('es-CL', { maximumFractionDigits: 2 });
+    }
+
+    async function cargarRecordsEjercicio(usuarioId, ejercicio) {
+      if (!ejercicio) {
+        limpiarVistaEjercicio('Selecciona un ejercicio para ver su historial');
+        return;
+      }
+
+      const { data: records, error } = await sb.from('records_ejercicio')
+        .select('*')
+        .eq('usuario_id', usuarioId)
+        .eq('ejercicio', ejercicio)
+        .order('fecha', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(30);
+
+      if (error) {
+        limpiarVistaEjercicio('Error al cargar los récords: ' + error.message);
+        return;
+      }
+      if (!records || records.length === 0) {
+        limpiarVistaEjercicio('Sin récords registrados para ' + ejercicio);
+        return;
+      }
+
+      cacheRecords = {};
+      records.forEach(r => { cacheRecords[r.id] = r; });
+
+      // Resumen: récord más alto y cantidad de registros
+      const maximo = Math.max(...records.map(r => Number(r.peso_max_kg)));
+      document.getElementById('ejResumen').innerHTML =
+        'Mejor marca: <strong>' + formatoKg(maximo) + ' kg</strong> · ' +
+        records.length + (records.length === 1 ? ' registro' : ' registros');
+
+      // Tabla: últimos 10 (más reciente primero) con variación vs. el registro anterior
+      document.getElementById('tablaRecords').innerHTML = records.slice(0, 10).map((r, i) => {
+        const anterior = records[i + 1];
+        let variacion = '<span class="var-eq">—</span>';
+        if (anterior) {
+          const diff = Number(r.peso_max_kg) - Number(anterior.peso_max_kg);
+          if (diff > 0)      variacion = '<span class="var-up">▲ +' + formatoKg(diff) + ' kg</span>';
+          else if (diff < 0) variacion = '<span class="var-down">▼ ' + formatoKg(diff) + ' kg</span>';
+          else               variacion = '<span class="var-eq">= sin cambio</span>';
+        }
+        return `
+          <tr>
+            <td>${new Date(r.fecha + 'T12:00:00').toLocaleDateString('es-CL')}</td>
+            <td>${formatoKg(r.peso_max_kg)} kg</td>
+            <td>${variacion}</td>
+            <td class="col-accion"><button class="btn-borrar" data-tabla="records_ejercicio" data-id="${r.id}">🗑 Borrar</button></td>
+          </tr>`;
+      }).join('');
+
+      // Gráfico: últimos 12 registros en orden cronológico
+      const recientes = records.slice(0, 12).reverse();
+      const etiquetas = recientes.map(r =>
+        new Date(r.fecha + 'T12:00:00').toLocaleDateString('es-CL', { day: '2-digit', month: 'short' }));
+      const valores = recientes.map(r => Number(r.peso_max_kg));
+      const maxGrafico = Math.max(...valores);
+      const colores = valores.map(v => v === maxGrafico ? '#BF1F7F' : '#6B2DB0');
+
+      document.getElementById('chartWrap').style.display = 'block';
+      if (chartEjercicio) chartEjercicio.destroy();
+
+      chartEjercicio = new Chart(document.getElementById('chartEjercicio'), {
+        type: 'bar',
+        data: {
+          labels: etiquetas,
+          datasets: [{
+            label: ejercicio + ' (kg)',
+            data: valores,
+            backgroundColor: colores,
+            borderRadius: 6,
+            maxBarThickness: 48
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: { label: ctx => ' ' + formatoKg(ctx.parsed.y) + ' kg' }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: 'rgba(238,232,255,0.55)' },
+              grid:  { display: false }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: { color: 'rgba(238,232,255,0.55)', callback: v => v + ' kg' },
+              grid:  { color: 'rgba(107,45,176,0.15)' }
+            }
+          }
+        }
+      });
+    }
+
+    selVerEjercicio.addEventListener('change', () => {
+      if (!clienteActual) return;
+      cargarRecordsEjercicio(clienteActual.id, selVerEjercicio.value);
+    });
+
+    // ── BORRAR REGISTROS (con confirmación escribiendo "si") ─────────
+    const modalBorrar = document.getElementById('modalBorrar');
+    const mbInput     = document.getElementById('mbInput');
+    const mbConfirmar = document.getElementById('mbConfirmar');
+    const mbMsg       = document.getElementById('mbMsg');
+
+    function confirmacionValida() {
+      const v = mbInput.value.trim().toLowerCase();
+      return v === 'si' || v === 'sí';
+    }
+
+    function abrirModalBorrar(tabla, id) {
+      const registro = (tabla === 'mediciones' ? cacheMediciones : cacheRecords)[id];
+      if (!registro || !clienteActual) return;
+
+      let tipo;
+      if (tabla === 'mediciones') {
+        tipo = 'medición corporal (' + (registro.peso_kg ?? '—') + ' kg, ' + (registro.altura_cm ?? '—') + ' cm)';
+      } else {
+        tipo = 'récord de ' + registro.ejercicio + ' (' + formatoKg(registro.peso_max_kg) + ' kg)';
+      }
+
+      document.getElementById('mbPersona').textContent = clienteActual.nombre;
+      document.getElementById('mbTipo').textContent    = tipo;
+      document.getElementById('mbFecha').textContent   =
+        new Date(registro.fecha + 'T12:00:00').toLocaleDateString('es-CL');
+
+      borrarPendiente = { tabla, id };
+      mbInput.value = '';
+      mbConfirmar.disabled = true;
+      mbConfirmar.textContent = 'Borrar registro';
+      mbMsg.style.display = 'none';
+      modalBorrar.classList.add('abierto');
+      setTimeout(() => mbInput.focus(), 50);
+    }
+
+    function cerrarModalBorrar() {
+      modalBorrar.classList.remove('abierto');
+      borrarPendiente = null;
+    }
+
+    // Botones "Borrar" de ambas tablas (delegación de eventos)
+    ['tablaHistorial', 'tablaRecords'].forEach(idTabla => {
+      document.getElementById(idTabla).addEventListener('click', e => {
+        const btn = e.target.closest('.btn-borrar');
+        if (btn) abrirModalBorrar(btn.dataset.tabla, btn.dataset.id);
+      });
+    });
+
+    mbInput.addEventListener('input', () => { mbConfirmar.disabled = !confirmacionValida(); });
+    mbInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && confirmacionValida()) mbConfirmar.click();
+    });
+    document.getElementById('mbCancelar').addEventListener('click', cerrarModalBorrar);
+    modalBorrar.addEventListener('click', e => { if (e.target === modalBorrar) cerrarModalBorrar(); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modalBorrar.classList.contains('abierto')) cerrarModalBorrar();
+    });
+
+    mbConfirmar.addEventListener('click', async () => {
+      if (!borrarPendiente || !confirmacionValida()) return;
+      const { tabla, id } = borrarPendiente;
+
+      mbConfirmar.disabled = true; mbConfirmar.textContent = 'Borrando...';
+
+      // .select() devuelve las filas borradas: si vienen vacías, RLS bloqueó el borrado
+      const { data, error } = await sb.from(tabla).delete().eq('id', id).select();
+
+      if (error || !data || data.length === 0) {
+        mbMsg.textContent = error
+          ? 'Error al borrar: ' + error.message
+          : 'No se pudo borrar el registro (revisa los permisos DELETE en Supabase).';
+        mbMsg.className = 'msg msg-err'; mbMsg.style.display = 'block';
+        mbConfirmar.textContent = 'Borrar registro';
+        mbConfirmar.disabled = !confirmacionValida();
+        return;
+      }
+
+      cerrarModalBorrar();
+      toast('🗑 Registro borrado correctamente');
+
+      if (tabla === 'mediciones') {
+        await recargarSugerencias(clienteActual.id);
+        cargarHistorial(clienteActual.id);
+      } else {
+        cargarRecordsEjercicio(clienteActual.id, selVerEjercicio.value);
+      }
+    });
 
     // Guardar medición
     document.getElementById('btnGuardarMedicion').addEventListener('click', async () => {
@@ -590,6 +936,9 @@
         msg.style.display = 'none';
         document.getElementById('rEjercicio').value = '';
         document.getElementById('rPeso').value = '';
+        // Mostrar de inmediato la evolución del ejercicio recién guardado
+        selVerEjercicio.value = ejercicio;
+        cargarRecordsEjercicio(clienteActual.id, ejercicio);
       }
     });
   </script>
