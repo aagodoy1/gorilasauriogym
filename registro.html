@@ -104,6 +104,35 @@
       background: rgba(191,31,127,0.05);
     }
     .input-group input::placeholder { color: rgba(255,255,255,0.18); }
+    .input-group input:focus-visible { outline: 2px solid #E872BE; outline-offset: 2px; }
+    .row > .input-group { min-width: 0; }
+    .input-group input { width: 100%; }
+
+    /* Consentimientos */
+    .consents { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.25rem; }
+    .check {
+      display: flex; align-items: flex-start; gap: 0.7rem;
+      font-size: 0.82rem; line-height: 1.5; color: rgba(238,232,255,0.8);
+      cursor: pointer;
+    }
+    .check input {
+      appearance: none; -webkit-appearance: none;
+      flex-shrink: 0; width: 20px; height: 20px; margin-top: 0.1rem;
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid rgba(191,31,127,0.5); border-radius: 5px;
+      cursor: pointer; display: grid; place-content: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .check input::after {
+      content: ''; width: 10px; height: 10px; transform: scale(0);
+      background: #fff; clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+      transition: transform 0.12s;
+    }
+    .check input:checked { background: #BF1F7F; border-color: #BF1F7F; }
+    .check input:checked::after { transform: scale(1); }
+    .check input:focus-visible { outline: 2px solid #E872BE; outline-offset: 2px; }
+    .check a { color: #E872BE; }
+    .consents-note { font-size: 0.75rem; color: rgba(238,232,255,0.6); }
 
     .btn-submit {
       margin-top: 0.5rem;
@@ -173,8 +202,8 @@
     <p class="subtitle">Completa tus datos para registrarte en el gym</p>
 
     <div class="form">
-      <div id="errorBox" class="error-box"></div>
-      <div id="successBox" class="success-box">
+      <div id="errorBox" class="error-box" role="alert"></div>
+      <div id="successBox" class="success-box" role="status">
         <strong>¡Registro exitoso! 🦍</strong>
         Revisa tu email para confirmar tu cuenta y luego inicia sesión.
       </div>
@@ -183,21 +212,21 @@
       <p class="section-label">Datos personales</p>
       <div class="row">
         <div class="input-group">
-          <label>Nombre</label>
-          <input type="text" id="inputNombre" placeholder="Juan" />
+          <label for="inputNombre">Nombre</label>
+          <input type="text" id="inputNombre" placeholder="Juan" autocomplete="given-name" />
         </div>
         <div class="input-group">
-          <label>Apellido</label>
-          <input type="text" id="inputApellido" placeholder="Pérez" />
+          <label for="inputApellido">Apellido</label>
+          <input type="text" id="inputApellido" placeholder="Pérez" autocomplete="family-name" />
         </div>
       </div>
       <div class="input-group">
-        <label>RUT</label>
-        <input type="text" id="inputRut" placeholder="12.345.678-9" />
+        <label for="inputRut">RUT</label>
+        <input type="text" id="inputRut" placeholder="12.345.678-9" autocomplete="off" />
       </div>
       <div class="input-group">
-        <label>Teléfono</label>
-        <input type="tel" id="inputTelefono" placeholder="+56 9 1234 5678" />
+        <label for="inputTelefono">Teléfono (opcional)</label>
+        <input type="tel" id="inputTelefono" placeholder="+56 9 1234 5678" autocomplete="tel" />
       </div>
 
       <div class="divider"></div>
@@ -205,16 +234,36 @@
       <!-- Credenciales -->
       <p class="section-label">Acceso</p>
       <div class="input-group">
-        <label>Email</label>
-        <input type="email" id="inputEmail" placeholder="tucorreo@gmail.com" />
+        <label for="inputEmail">Email</label>
+        <input type="email" id="inputEmail" placeholder="tucorreo@gmail.com" autocomplete="email" />
       </div>
       <div class="input-group">
-        <label>Contraseña</label>
-        <input type="password" id="inputPass" placeholder="Mínimo 8 caracteres" />
+        <label for="inputPass">Contraseña</label>
+        <input type="password" id="inputPass" placeholder="Mínimo 8 caracteres" autocomplete="new-password" />
       </div>
       <div class="input-group">
-        <label>Confirmar contraseña</label>
-        <input type="password" id="inputPass2" placeholder="Repite tu contraseña" />
+        <label for="inputPass2">Confirmar contraseña</label>
+        <input type="password" id="inputPass2" placeholder="Repite tu contraseña" autocomplete="new-password" />
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Consentimientos (sin marcar por defecto) -->
+      <p class="section-label">Autorizaciones</p>
+      <div class="consents">
+        <label class="check">
+          <input type="checkbox" id="chkTerminos" />
+          <span>He leído y acepto los <a href="terminos.html" target="_blank" rel="noopener">Términos y Condiciones</a> y la <a href="privacidad.html" target="_blank" rel="noopener">Política de Privacidad</a>.</span>
+        </label>
+        <label class="check">
+          <input type="checkbox" id="chkEdad" />
+          <span>Declaro tener 18 años o más. Si soy menor de edad, cuento con la autorización de mi madre, padre o tutor legal.</span>
+        </label>
+        <label class="check">
+          <input type="checkbox" id="chkSalud" />
+          <span>Autorizo el tratamiento de mis datos de composición corporal para que mi entrenador haga seguimiento de mi evolución. Puedo retirar esta autorización cuando quiera.</span>
+        </label>
+        <p class="consents-note">Las tres autorizaciones son necesarias para crear tu cuenta.</p>
       </div>
 
       <button class="btn-submit" id="btnRegistrar">Crear mi cuenta</button>
@@ -265,17 +314,38 @@
         errBox.textContent = 'Las contraseñas no coinciden.';
         errBox.style.display = 'block'; return;
       }
+      if (!document.getElementById('chkTerminos').checked) {
+        errBox.textContent = 'Debes aceptar los Términos y Condiciones y la Política de Privacidad.';
+        errBox.style.display = 'block'; return;
+      }
+      if (!document.getElementById('chkEdad').checked) {
+        errBox.textContent = 'Debes declarar que tienes 18 años o más o, si eres menor de edad, que cuentas con la autorización de tu madre, padre o tutor legal.';
+        errBox.style.display = 'block'; return;
+      }
+      if (!document.getElementById('chkSalud').checked) {
+        errBox.textContent = 'Debes autorizar el tratamiento de tus datos de composición corporal para poder crear tu cuenta.';
+        errBox.style.display = 'block'; return;
+      }
 
       const btn = document.getElementById('btnRegistrar');
       btn.textContent = 'Creando cuenta...'; btn.disabled = true;
 
       // Crear usuario con todos los datos como metadata
       // El trigger en Supabase crea el perfil automáticamente al confirmar email
+      // Además de los datos del perfil, se deja constancia de qué se aceptó y cuándo
+      // (queda en los metadatos del usuario en Supabase Auth).
+      const ahora = new Date().toISOString();
       const { data, error } = await sb.auth.signUp({
         email,
         password: pass,
         options: {
-          data: { nombre, apellido, rut, telefono }
+          data: {
+            nombre, apellido, rut, telefono,
+            version_documentos:        '2026-10-11',
+            declara_edad_at:           ahora,
+            acepta_terminos_at:        ahora,
+            acepta_datos_salud_at:     ahora
+          }
         }
       });
 

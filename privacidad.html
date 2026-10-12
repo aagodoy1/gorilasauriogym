@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Política de Privacidad — Gorilasaurio Gym</title>
+  <!-- BORRADOR: revisar con un abogado antes de dar por definitivo. Actualizar al formalizar el negocio (razón social, RUT) o al cambiar proveedores (p. ej. al alojar las fuentes en el propio sitio). -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --purple-mid: #6B2DB0;
+      --magenta:    #BF1F7F;
+      --link:       #E872BE;
+      --bg-night:   #0E0720;
+      --bg-card:    #1A0A2E;
+      --text-ghost: #EEE8FF;
+      --text-body:  rgba(238,232,255,0.82);
+      --text-muted: rgba(238,232,255,0.68);
+      --gradient:   linear-gradient(135deg, #3D1A6E 0%, #6B2DB0 55%, #BF1F7F 100%);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg-night); color: var(--text-ghost); line-height: 1.7; }
+    a { color: var(--link); }
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; border-radius: 4px; }
+
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 1rem 2rem; background: rgba(26,10,46,0.95);
+      border-bottom: 1px solid rgba(191,31,127,0.25);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .topbar-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .topbar-logo img { height: 34px; width: auto; }
+    .topbar-logo span {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.08em;
+      background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .volver { font-size: 0.85rem; text-decoration: none; }
+    .volver:hover { text-decoration: underline; }
+
+    .doc { max-width: 780px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 6vw, 3.2rem); letter-spacing: 0.05em; line-height: 1.05;
+      background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+    .meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 2rem; }
+    h2 {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.05em;
+      color: #fff; margin: 2.5rem 0 0.75rem; scroll-margin-top: 5rem;
+    }
+    h3 { font-size: 1rem; color: #fff; margin: 1.25rem 0 0.4rem; }
+    p, li { color: var(--text-body); font-size: 0.97rem; }
+    p { margin-bottom: 0.9rem; }
+    ul { margin: 0 0 1rem 1.25rem; }
+    li { margin-bottom: 0.4rem; }
+    strong { color: #fff; font-weight: 600; }
+
+    .resumen, .toc {
+      background: var(--bg-card); border: 1px solid rgba(107,45,176,0.3);
+      border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; position: relative; overflow: hidden;
+    }
+    .resumen::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient); }
+    .resumen h2, .toc h2 { margin-top: 0; }
+    .toc ol { margin-left: 1.25rem; columns: 2; column-gap: 2rem; }
+    .toc li { font-size: 0.9rem; break-inside: avoid; }
+
+    .tabla-wrap { overflow-x: auto; margin: 0.5rem 0 1.25rem; border: 1px solid rgba(107,45,176,0.25); border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 560px; }
+    th { text-align: left; padding: 0.7rem 0.9rem; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); background: rgba(107,45,176,0.12); }
+    td { padding: 0.7rem 0.9rem; border-top: 1px solid rgba(107,45,176,0.18); color: var(--text-body); vertical-align: top; }
+
+    .aviso {
+      border-left: 3px solid var(--magenta); background: rgba(191,31,127,0.08);
+      padding: 0.9rem 1.1rem; border-radius: 0 10px 10px 0; margin: 1rem 0 1.25rem;
+    }
+    .aviso p:last-child { margin-bottom: 0; }
+
+    footer { border-top: 1px solid rgba(191,31,127,0.15); padding: 2rem 1.5rem; text-align: center; font-size: 0.85rem; color: var(--text-muted); }
+    footer a { margin: 0 0.75rem; }
+
+    @media (max-width: 640px) {
+      .topbar { padding: 0.9rem 1.25rem; }
+      .toc ol { columns: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <a href="index.html" class="topbar-logo">
+      <img src="logo.png" alt="" />
+      <span>GORILASAURIO GYM</span>
+    </a>
+    <a href="index.html" class="volver">← Volver al inicio</a>
+  </header>
+
+  <main class="doc">
+    <h1>Política de Privacidad</h1>
+    <p class="meta">Última actualización: 11 de octubre de 2026 · Versión 2026-10-11</p>
+
+    <section class="resumen" aria-labelledby="resumen-titulo">
+      <h2 id="resumen-titulo">En resumen</h2>
+      <ul>
+        <li>Te pedimos solo lo necesario para crear tu cuenta y registrar tu evolución física: nombre, RUT, email, teléfono (opcional), peso, altura y récords de ejercicio.</li>
+        <li>Tus datos los ve tu entrenador. <strong>No los vendemos ni los usamos para publicidad.</strong></li>
+        <li>No usamos cookies de seguimiento ni de publicidad.</li>
+        <li>Puedes pedir acceder a tus datos, corregirlos o eliminarlos escribiendo a <a href="mailto:gimnasiogorilasaurio@gmail.com">gimnasiogorilasaurio@gmail.com</a>.</li>
+      </ul>
+    </section>
+
+    <nav class="toc" aria-labelledby="toc-titulo">
+      <h2 id="toc-titulo">Contenido</h2>
+      <ol>
+        <li><a href="#responsable">Quién es el responsable</a></li>
+        <li><a href="#datos">Qué datos recogemos</a></li>
+        <li><a href="#finalidades">Para qué los usamos</a></li>
+        <li><a href="#salud">Datos de composición corporal</a></li>
+        <li><a href="#terceros">Quién más interviene</a></li>
+        <li><a href="#transferencias">Transferencias internacionales</a></li>
+        <li><a href="#cookies">Cookies y almacenamiento local</a></li>
+        <li><a href="#conservacion">Cuánto tiempo los conservamos</a></li>
+        <li><a href="#derechos">Tus derechos</a></li>
+        <li><a href="#eliminacion">Cómo eliminar tus datos</a></li>
+        <li><a href="#menores">Menores de edad</a></li>
+        <li><a href="#seguridad">Seguridad</a></li>
+        <li><a href="#cambios">Cambios a esta política</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="responsable">1. Quién es el responsable</h2>
+    <p>
+      El responsable del tratamiento de tus datos personales es <strong>Rodrigo Mundaca Sandoval</strong>, quien
+      está a cargo del emprendimiento <strong>Gorilasaurio Gym</strong>, ubicado en Volcán Longav, Peñalolén, Santiago, Chile.
+      Gorilasaurio Gym es un emprendimiento que aún no se encuentra constituido como empresa; cuando lo esté,
+      actualizaremos esta política con los datos de la entidad correspondiente.
+    </p>
+    <p>Para cualquier consulta sobre tus datos puedes escribir a <a href="mailto:gimnasiogorilasaurio@gmail.com">gimnasiogorilasaurio@gmail.com</a>.</p>
+
+    <h2 id="datos">2. Qué datos recogemos</h2>
+    <p>Recogemos únicamente los datos necesarios para que el servicio funcione:</p>
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Dato</th><th scope="col">Cuándo lo entregas</th><th scope="col">Para qué se usa</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Nombre y apellido</td><td>Al crear tu cuenta</td><td>Identificarte ante tu entrenador</td></tr>
+          <tr><td>RUT</td><td>Al crear tu cuenta</td><td>Identificarte de forma única y evitar cuentas duplicadas</td></tr>
+          <tr><td>Email</td><td>Al crear tu cuenta</td><td>Confirmar tu cuenta, iniciar sesión y contactarte sobre el servicio</td></tr>
+          <tr><td>Contraseña</td><td>Al crear tu cuenta</td><td>Proteger tu acceso. Se guarda cifrada y no podemos verla</td></tr>
+          <tr><td>Teléfono (opcional)</td><td>Al crear tu cuenta</td><td>Contactarte sobre tus clases</td></tr>
+          <tr><td>Peso y altura</td><td>Los registra tu entrenador</td><td>Seguimiento de tu evolución (ver sección 4)</td></tr>
+          <tr><td>Récords de ejercicio</td><td>Los registra tu entrenador</td><td>Seguimiento de tu evolución (ver sección 4)</td></tr>
+          <tr><td>Fecha de aceptación de documentos</td><td>Al crear tu cuenta</td><td>Dejar constancia de lo que aceptaste y cuándo</td></tr>
+          <tr><td>Datos técnicos de conexión (como la dirección IP)</td><td>Al visitar el sitio</td><td>Los generan automáticamente los proveedores de hosting para el funcionamiento y la seguridad del sitio</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Si solo visitas la página de inicio, sin crear una cuenta, no te pedimos ningún dato personal.</p>
+
+    <h2 id="finalidades">3. Para qué los usamos</h2>
+    <ul>
+      <li>Crear y administrar tu cuenta (“Perfil Saurio”).</li>
+      <li>Que tu entrenador registre tus mediciones y récords, y que tú puedas verlos.</li>
+      <li>Comunicarnos contigo sobre el servicio (por ejemplo, el correo de confirmación de tu cuenta).</li>
+      <li>Mantener la seguridad del sitio y prevenir usos indebidos.</li>
+    </ul>
+    <p>No usamos tus datos para publicidad, no elaboramos perfiles comerciales y no los vendemos ni los cedemos a terceros con fines de marketing.</p>
+
+    <h2 id="salud">4. Datos de composición corporal y de salud</h2>
+    <p>
+      Tu peso, tu altura y, en general, tu composición corporal son datos relativos a tu condición física y pueden considerarse datos
+      de salud, que reciben una protección reforzada. Por eso, al crear tu cuenta te pedimos una autorización
+      <strong>separada y expresa</strong> para tratarlos, que no está marcada por defecto, con la finalidad de que tu entrenador haga seguimiento
+      de tu evolución. Tus récords de ejercicio se tratan con esa misma finalidad.
+    </p>
+    <div class="aviso">
+      <p>Solo tu entrenador puede ingresar y modificar estos datos. Tú puedes consultar los tuyos, y ningún otro cliente puede verlos.</p>
+    </div>
+    <p>Puedes retirar esta autorización en cualquier momento escribiendo al correo de contacto. Si la retiras, tu entrenador dejará de registrar nuevos datos de este tipo y eliminaremos los ya registrados cuando lo pidas (ver sección 10).</p>
+
+    <h2 id="terceros">5. Quién más interviene</h2>
+    <p>Tus datos son vistos por tu entrenador. Para que el sitio funcione usamos los siguientes proveedores, que tratan datos por encargo nuestro:</p>
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Proveedor</th><th scope="col">Para qué</th><th scope="col">Qué datos recibe</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Supabase</strong></td><td>Base de datos y autenticación de cuentas. Nuestro proyecto está alojado en São Paulo, Brasil.</td><td>Los datos de las secciones 2 y 4</td></tr>
+          <tr><td><strong>Vercel</strong></td><td>Alojamiento y entrega del sitio web</td><td>Datos técnicos de conexión, como la dirección IP</td></tr>
+          <tr><td><strong>Google</strong></td><td>Correo electrónico (Gmail) y tipografías (Google Fonts)</td><td>Tu email cuando nos escribes o te escribimos; dirección IP al cargar las tipografías</td></tr>
+          <tr><td><strong>jsDelivr</strong></td><td>Entrega de librerías de código que usa el sitio</td><td>Datos técnicos de conexión, como la dirección IP</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Los enlaces a Instagram y WhatsApp te llevan a servicios de terceros con sus propias políticas de privacidad; solo se comparte información con
+      ellos si tú los abres. También podríamos entregar datos si una autoridad competente lo exige conforme a la ley.
+    </p>
+
+    <h2 id="transferencias">6. Transferencias internacionales</h2>
+    <p>
+      Nuestra base de datos está en Brasil, y algunos proveedores (Vercel, Google, jsDelivr) pueden procesar datos técnicos en otros países,
+      incluido Estados Unidos. Elegimos proveedores reconocidos que aplican medidas de seguridad, pero estos países pueden tener
+      normas de protección de datos distintas a las de Chile.
+    </p>
+
+    <h2 id="cookies">7. Cookies y almacenamiento local</h2>
+    <p>
+      <strong>No usamos cookies de seguimiento, analítica ni publicidad</strong>, por lo que no te mostramos un aviso de cookies. Cuando inicias sesión,
+      el sitio guarda en el almacenamiento local de tu navegador un identificador de sesión, necesario para mantenerte conectado. Se elimina
+      cuando cierras sesión o cuando borras los datos del sitio en tu navegador.
+    </p>
+    <p>Si en el futuro incorporáramos herramientas de analítica u otras no esenciales, te pediremos tu consentimiento antes de activarlas y actualizaremos esta política.</p>
+
+    <h2 id="conservacion">8. Cuánto tiempo los conservamos</h2>
+    <p>
+      Conservamos tus datos mientras tu cuenta esté activa. Si pides eliminarla, borramos tus datos en el plazo indicado en la sección 10,
+      salvo aquello que la ley nos obligue a conservar.
+    </p>
+
+    <h2 id="derechos">9. Tus derechos</h2>
+    <p>En los términos que establece la ley chilena aplicable, puedes:</p>
+    <ul>
+      <li><strong>Acceder</strong> a los datos que tenemos sobre ti.</li>
+      <li><strong>Rectificar</strong> datos inexactos o incompletos.</li>
+      <li><strong>Eliminar</strong> tus datos.</li>
+      <li><strong>Oponerte</strong> a un tratamiento o <strong>pedir su bloqueo</strong>.</li>
+      <li><strong>Pedir una copia</strong> de tus datos en un formato que puedas reutilizar (portabilidad).</li>
+      <li><strong>Retirar tu consentimiento</strong> cuando lo hayas dado.</li>
+    </ul>
+    <p>Para ejercerlos, escríbenos desde el email con el que te registraste. Si no estás conforme con nuestra respuesta, puedes acudir a la autoridad competente en materia de protección de datos.</p>
+
+    <h2 id="eliminacion">10. Cómo eliminar tus datos</h2>
+    <ol style="margin: 0 0 1rem 1.25rem;">
+      <li>Escribe a <a href="mailto:gimnasiogorilasaurio@gmail.com?subject=Eliminar%20mi%20cuenta">gimnasiogorilasaurio@gmail.com</a> con el asunto <strong>“Eliminar mi cuenta”</strong>, desde el email con el que te registraste.</li>
+      <li>Podemos pedirte datos adicionales para confirmar que eres tú, para evitar que otra persona elimine tu cuenta.</li>
+      <li>Eliminaremos tu cuenta y tus datos en un plazo máximo de <strong>30 días corridos</strong> y te lo confirmaremos por correo.</li>
+    </ol>
+    <p>
+      Se elimina tu cuenta de acceso, tu perfil, tus mediciones y tus récords. Una vez eliminados no se pueden recuperar. Si lo prefieres,
+      puedes pedir solo la eliminación de algunas mediciones o récords.
+    </p>
+
+    <h2 id="menores">11. Menores de edad</h2>
+    <p>
+      El servicio está pensado para personas de 14 a 80 años. Si tienes menos de 18 años, para crear una cuenta necesitas la autorización de tu madre,
+      padre o tutor legal, y declaras contar con ella al registrarte. Si crees que se creó una cuenta de un menor sin esa autorización,
+      avísanos para eliminar sus datos.
+    </p>
+
+    <h2 id="seguridad">12. Seguridad</h2>
+    <p>
+      Aplicamos medidas razonables para proteger tus datos: conexión cifrada (HTTPS), contraseñas almacenadas de forma cifrada, y reglas de
+      acceso en la base de datos para que cada cliente solo vea lo suyo y únicamente el personal autorizado vea los datos de todos. Ningún sistema es
+      completamente infalible; si ocurriera una brecha de seguridad que te afecte, te informaremos conforme a la ley.
+    </p>
+
+    <h2 id="cambios">13. Cambios a esta política</h2>
+    <p>Podemos actualizar esta política. Indicaremos la fecha de la última actualización al inicio, y si el cambio es importante te lo avisaremos por email o en el sitio.</p>
+
+    <h2 id="contacto">14. Contacto</h2>
+    <p>
+      Rodrigo Mundaca Sandoval — Gorilasaurio Gym<br />
+      Volcán Longav, Peñalolén, Santiago, Chile<br />
+      <a href="mailto:gimnasiogorilasaurio@gmail.com">gimnasiogorilasaurio@gmail.com</a> ·
+      <a href="https://wa.me/56934419548" rel="noopener">WhatsApp +56 9 3441 9548</a>
+    </p>
+  </main>
+
+  <footer>
+    <a href="index.html">Inicio</a>
+    <a href="terminos.html">Términos y Condiciones</a>
+    <p style="margin-top:1rem;">© 2026 Gorilasaurio Gym</p>
+  </footer>
+
+</body>
+</html>

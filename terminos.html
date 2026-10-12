@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Términos y Condiciones — Gorilasaurio Gym</title>
+  <!-- BORRADOR: revisar con un abogado antes de dar por definitivo. Actualizar al formalizar el negocio (razón social, RUT) y cuando existan pagos o reservas online. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --purple-mid: #6B2DB0;
+      --magenta:    #BF1F7F;
+      --link:       #E872BE;
+      --bg-night:   #0E0720;
+      --bg-card:    #1A0A2E;
+      --text-ghost: #EEE8FF;
+      --text-body:  rgba(238,232,255,0.82);
+      --text-muted: rgba(238,232,255,0.68);
+      --gradient:   linear-gradient(135deg, #3D1A6E 0%, #6B2DB0 55%, #BF1F7F 100%);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg-night); color: var(--text-ghost); line-height: 1.7; }
+    a { color: var(--link); }
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; border-radius: 4px; }
+
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 1rem 2rem; background: rgba(26,10,46,0.95);
+      border-bottom: 1px solid rgba(191,31,127,0.25);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .topbar-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .topbar-logo img { height: 34px; width: auto; }
+    .topbar-logo span {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.08em;
+      background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .volver { font-size: 0.85rem; text-decoration: none; }
+    .volver:hover { text-decoration: underline; }
+
+    .doc { max-width: 780px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 6vw, 3.2rem); letter-spacing: 0.05em; line-height: 1.05;
+      background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+    .meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 2rem; }
+    h2 {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.05em;
+      color: #fff; margin: 2.5rem 0 0.75rem; scroll-margin-top: 5rem;
+    }
+    p, li { color: var(--text-body); font-size: 0.97rem; }
+    p { margin-bottom: 0.9rem; }
+    ul { margin: 0 0 1rem 1.25rem; }
+    li { margin-bottom: 0.4rem; }
+    strong { color: #fff; font-weight: 600; }
+
+    .resumen, .toc {
+      background: var(--bg-card); border: 1px solid rgba(107,45,176,0.3);
+      border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; position: relative; overflow: hidden;
+    }
+    .resumen::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient); }
+    .resumen h2, .toc h2 { margin-top: 0; }
+    .toc ol { margin-left: 1.25rem; columns: 2; column-gap: 2rem; }
+    .toc li { font-size: 0.9rem; break-inside: avoid; }
+
+    .aviso {
+      border-left: 3px solid var(--magenta); background: rgba(191,31,127,0.08);
+      padding: 0.9rem 1.1rem; border-radius: 0 10px 10px 0; margin: 1rem 0 1.25rem;
+    }
+    .aviso p:last-child { margin-bottom: 0; }
+
+    footer { border-top: 1px solid rgba(191,31,127,0.15); padding: 2rem 1.5rem; text-align: center; font-size: 0.85rem; color: var(--text-muted); }
+    footer a { margin: 0 0.75rem; }
+
+    @media (max-width: 640px) {
+      .topbar { padding: 0.9rem 1.25rem; }
+      .toc ol { columns: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <a href="index.html" class="topbar-logo">
+      <img src="logo.png" alt="" />
+      <span>GORILASAURIO GYM</span>
+    </a>
+    <a href="index.html" class="volver">← Volver al inicio</a>
+  </header>
+
+  <main class="doc">
+    <h1>Términos y Condiciones</h1>
+    <p class="meta">Última actualización: 11 de octubre de 2026 · Versión 2026-10-11</p>
+
+    <section class="resumen" aria-labelledby="resumen-titulo">
+      <h2 id="resumen-titulo">En resumen</h2>
+      <ul>
+        <li>El servicio es para personas de 14 a 80 años sin patologías incapacitantes. Si tienes menos de 18, necesitas autorización de tu madre, padre o tutor legal.</li>
+        <li>Las métricas de tu Perfil Saurio son informativas y <strong>no reemplazan la opinión de un médico</strong>.</li>
+        <li>Entrenar implica riesgos. Cuéntale a tu entrenador cualquier lesión o condición de salud.</li>
+        <li>Cuida tu contraseña: eres responsable de lo que ocurra con tu cuenta.</li>
+      </ul>
+    </section>
+
+    <nav class="toc" aria-labelledby="toc-titulo">
+      <h2 id="toc-titulo">Contenido</h2>
+      <ol>
+        <li><a href="#aceptacion">Aceptación y responsable</a></li>
+        <li><a href="#servicio">El servicio</a></li>
+        <li><a href="#quienes">Quiénes pueden usarlo</a></li>
+        <li><a href="#cuenta">Tu cuenta</a></li>
+        <li><a href="#uso">Uso aceptable</a></li>
+        <li><a href="#salud">Salud y seguridad</a></li>
+        <li><a href="#metricas">Mediciones y récords</a></li>
+        <li><a href="#comercial">Condiciones comerciales</a></li>
+        <li><a href="#responsabilidad">Responsabilidad</a></li>
+        <li><a href="#propiedad">Propiedad intelectual</a></li>
+        <li><a href="#suspension">Suspensión o cierre de cuenta</a></li>
+        <li><a href="#cambios">Cambios</a></li>
+        <li><a href="#ley">Ley aplicable</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="aceptacion">1. Aceptación y responsable</h2>
+    <p>
+      Estos términos regulan el uso del sitio web de Gorilasaurio Gym y de las cuentas de usuario (“Perfil Saurio”). Al crear una cuenta o usar
+      el sitio, declaras haberlos leído y aceptarlos. Si no estás de acuerdo, no crees una cuenta.
+    </p>
+    <p>
+      El servicio es ofrecido por <strong>Rodrigo Mundaca Sandoval</strong>, a cargo del emprendimiento Gorilasaurio Gym, ubicado en
+      Volcán Longav, Peñalolén, Santiago, Chile. Gorilasaurio Gym es un emprendimiento que aún no está constituido como empresa.
+      El tratamiento de tus datos personales se explica en nuestra <a href="privacidad.html">Política de Privacidad</a>.
+    </p>
+
+    <h2 id="servicio">2. El servicio</h2>
+    <p>Gorilasaurio Gym ofrece entrenamiento personalizado, con clases de máximo 2 personas. A través del sitio puedes:</p>
+    <ul>
+      <li>Conocer los servicios, horarios y datos de contacto del gimnasio.</li>
+      <li>Crear una cuenta para consultar las mediciones de peso y altura y los récords de ejercicio que registra tu entrenador.</li>
+    </ul>
+    <p>Por ahora el sitio <strong>no permite reservar horas ni pagar en línea</strong>. Si esto cambia, actualizaremos estos términos.</p>
+
+    <h2 id="quienes">3. Quiénes pueden usarlo</h2>
+    <ul>
+      <li>El servicio está dirigido a personas <strong>entre 14 y 80 años, sin patologías incapacitantes</strong>.</li>
+      <li>Si tienes menos de 18 años, necesitas la autorización de tu madre, padre o tutor legal para crear una cuenta y entrenar, y al registrarte declaras contar con ella.</li>
+      <li>Debes entregar datos verdaderos y mantenerlos actualizados.</li>
+    </ul>
+
+    <h2 id="cuenta">4. Tu cuenta</h2>
+    <ul>
+      <li>Eres responsable de mantener la confidencialidad de tu contraseña y de lo que ocurra con tu cuenta.</li>
+      <li>La cuenta es personal: no la compartas ni crees cuentas con datos de otras personas.</li>
+      <li>Si sospechas que alguien accedió a tu cuenta, avísanos de inmediato al correo de contacto.</li>
+      <li>Si olvidas tu contraseña, habla con tu entrenador.</li>
+    </ul>
+
+    <h2 id="uso">5. Uso aceptable</h2>
+    <p>Te comprometes a no:</p>
+    <ul>
+      <li>Intentar acceder a cuentas o datos de otras personas, ni a partes del sitio que no te corresponden.</li>
+      <li>Alterar, sobrecargar o intentar vulnerar la seguridad del sitio.</li>
+      <li>Usar el sitio con fines ilegales, o para suplantar a otra persona.</li>
+      <li>Copiar o usar el contenido, el logo o la marca con fines comerciales sin autorización.</li>
+    </ul>
+
+    <h2 id="salud">6. Salud y seguridad en el entrenamiento</h2>
+    <div class="aviso">
+      <p>La actividad física implica riesgos, como lesiones. El contenido del sitio y las métricas de tu perfil <strong>son informativos y no constituyen diagnóstico, tratamiento ni consejo médico</strong>.</p>
+    </div>
+    <ul>
+      <li>Antes de comenzar, y si tienes dudas sobre tu estado de salud, consulta a un médico.</li>
+      <li>Declaras que no tienes una condición que te impida entrenar con seguridad, o que la has informado a tu entrenador.</li>
+      <li>Informa a tu entrenador cualquier lesión, dolor, enfermedad o cambio en tu salud, y detén el ejercicio si sientes molestias.</li>
+      <li>Sigue las indicaciones de tu entrenador y usa los equipos de forma correcta.</li>
+    </ul>
+
+    <h2 id="metricas">7. Mediciones y récords</h2>
+    <p>
+      Los datos de peso, altura y récords de ejercicio son registrados por tu entrenador. Si detectas un error, avísale y lo corregirá. Puedes pedir
+      acceder a estos datos, corregirlos o eliminarlos según la <a href="privacidad.html#derechos">Política de Privacidad</a>.
+    </p>
+
+    <h2 id="comercial">8. Condiciones comerciales</h2>
+    <p>
+      Los precios, planes, formas de pago, cambios y cancelaciones de las clases se informan y acuerdan directamente con el entrenador. El sitio
+      no procesa pagos. Lo que se acuerde con el entrenador se entiende sin perjuicio de los derechos que la ley te reconoce como consumidor.
+    </p>
+
+    <h2 id="responsabilidad">9. Responsabilidad</h2>
+    <p>
+      Hacemos lo posible por que el sitio esté disponible y la información sea correcta, pero puede haber interrupciones o errores. Dentro de lo que permite la ley, no
+      respondemos por fallas de servicios de terceros ni por interrupciones fuera de nuestro control. Estos términos no limitan los derechos
+      irrenunciables que la ley chilena te otorga, ni nuestra responsabilidad cuando la ley no permite excluirla.
+    </p>
+
+    <h2 id="propiedad">10. Propiedad intelectual</h2>
+    <p>
+      El nombre, el logo, los textos, las imágenes y el diseño del sitio pertenecen a Gorilasaurio Gym o se usan con autorización. No puedes
+      copiarlos ni utilizarlos sin permiso.
+    </p>
+
+    <h2 id="suspension">11. Suspensión o cierre de cuenta</h2>
+    <p>
+      Podemos suspender o cerrar una cuenta si se incumplen estos términos o si hay riesgo para la seguridad del sitio o de otras personas.
+      Tú puedes pedir el cierre y la eliminación de tu cuenta cuando quieras, como se explica en la
+      <a href="privacidad.html#eliminacion">Política de Privacidad</a>.
+    </p>
+
+    <h2 id="cambios">12. Cambios</h2>
+    <p>
+      Podemos modificar estos términos. Indicaremos la fecha de la última actualización al inicio y, si el cambio es importante,
+      te avisaremos por email o en el sitio. Si sigues usando el servicio después del aviso, entenderemos que aceptas los cambios.
+    </p>
+
+    <h2 id="ley">13. Ley aplicable</h2>
+    <p>Estos términos se rigen por las leyes de la República de Chile.</p>
+
+    <h2 id="contacto">14. Contacto</h2>
+    <p>
+      Rodrigo Mundaca Sandoval — Gorilasaurio Gym<br />
+      Volcán Longav, Peñalolén, Santiago, Chile<br />
+      <a href="mailto:gimnasiogorilasaurio@gmail.com">gimnasiogorilasaurio@gmail.com</a> ·
+      <a href="https://wa.me/56934419548" rel="noopener">WhatsApp +56 9 3441 9548</a>
+    </p>
+  </main>
+
+  <footer>
+    <a href="index.html">Inicio</a>
+    <a href="privacidad.html">Política de Privacidad</a>
+    <p style="margin-top:1rem;">© 2026 Gorilasaurio Gym</p>
+  </footer>
+
+</body>
+</html>
