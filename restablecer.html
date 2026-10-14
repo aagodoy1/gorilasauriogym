@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Nueva contraseña — Gorilasaurio Gym</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --purple-dark: #3D1A6E;
+      --purple-mid:  #6B2DB0;
+      --magenta:     #BF1F7F;
+      --bg-night:    #0E0720;
+      --bg-card:     #1A0A2E;
+      --text-ghost:  #EEE8FF;
+      --gradient:    linear-gradient(135deg, #3D1A6E 0%, #6B2DB0 55%, #BF1F7F 100%);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg-night);
+      color: var(--text-ghost);
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid rgba(191,31,127,0.25);
+      border-radius: 24px;
+      padding: 2.5rem;
+      width: 100%; max-width: 440px;
+      position: relative;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--gradient);
+      border-radius: 24px 24px 0 0;
+    }
+    .logo-wrap { text-align: center; margin-bottom: 1.5rem; }
+    .logo-wrap img { height: 72px; filter: drop-shadow(0 0 24px rgba(191,31,127,0.4)); }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem; letter-spacing: 0.06em;
+      background: var(--gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center; margin-bottom: 0.25rem;
+    }
+    .subtitle { text-align: center; color: rgba(238,232,255,0.65); font-size: 0.875rem; margin-bottom: 1.75rem; }
+
+    .form { display: none; flex-direction: column; gap: 1rem; }
+    .input-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .input-group label {
+      font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: rgba(238,232,255,0.6);
+    }
+    .input-group input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(191,31,127,0.2);
+      border-radius: 10px;
+      color: #fff; font-size: 0.95rem;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+    }
+    .input-group input:focus { border-color: #BF1F7F; background: rgba(191,31,127,0.05); }
+    .input-group input:focus-visible { outline: 2px solid #E872BE; outline-offset: 2px; }
+    .input-group input::placeholder { color: rgba(255,255,255,0.25); }
+
+    .btn-submit {
+      margin-top: 0.5rem; padding: 0.9rem;
+      background: var(--gradient); color: #fff; border: none;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700;
+      cursor: pointer; box-shadow: 0 4px 20px rgba(191,31,127,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(191,31,127,0.5); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-submit:focus-visible, a:focus-visible { outline: 2px solid #E872BE; outline-offset: 3px; }
+
+    .box { border-radius: 10px; padding: 0.85rem 1rem; font-size: 0.88rem; line-height: 1.5; display: none; }
+    .box-error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.35); color: #F87171; }
+    .box-ok    { background: rgba(74,222,128,0.1);  border: 1px solid rgba(74,222,128,0.35);  color: #4ADE80; }
+    .box a, .link { color: #E872BE; }
+    .estado { text-align: center; font-size: 0.9rem; color: rgba(238,232,255,0.75); }
+    .back { text-align: center; margin-top: 1.25rem; font-size: 0.82rem; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="logo-wrap">
+      <img src="logo.png" alt="Gorilasaurio Gym" />
+    </div>
+    <h1>Nueva contraseña</h1>
+    <p class="subtitle">Elige una contraseña nueva para tu Perfil Saurio</p>
+
+    <p class="estado" id="estadoCarga">Verificando tu enlace…</p>
+
+    <div id="boxInvalido" class="box box-error" role="alert">
+      Este enlace no es válido o ya expiró. Vuelve al inicio, presiona “Iniciar sesión” y luego “Recupérala por email” para pedir uno nuevo.
+    </div>
+
+    <form class="form" id="formNueva" novalidate>
+      <div id="boxError" class="box box-error" role="alert"></div>
+      <div class="input-group">
+        <label for="inputPass">Nueva contraseña</label>
+        <input type="password" id="inputPass" placeholder="Mínimo 8 caracteres" autocomplete="new-password" />
+      </div>
+      <div class="input-group">
+        <label for="inputPass2">Confirmar contraseña</label>
+        <input type="password" id="inputPass2" placeholder="Repite tu contraseña" autocomplete="new-password" />
+      </div>
+      <button type="submit" class="btn-submit" id="btnGuardar">Guardar contraseña</button>
+    </form>
+
+    <div id="boxListo" class="box box-ok" role="status">
+      Tu contraseña se actualizó. En unos segundos te llevamos a tu perfil. Si no pasa nada, <a href="perfil.html">haz clic aquí</a>.
+    </div>
+
+    <p class="back"><a class="link" href="index.html">← Volver al inicio</a></p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL  = 'https://djomlyilfuncqdhyqxgw.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqb21seWlsZnVuY3FkaHlxeGd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTk1OTIsImV4cCI6MjA5OTg5NTU5Mn0.svT1PAczck-ioWVJ58SqlT4H1gL9v3xOVio71eietwE';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    const $ = id => document.getElementById(id);
+    let enlaceValido = false;
+
+    function mostrarFormulario() {
+      enlaceValido = true;
+      $('estadoCarga').style.display = 'none';
+      $('boxInvalido').style.display = 'none';
+      $('formNueva').style.display = 'flex';
+    }
+    function mostrarInvalido() {
+      $('estadoCarga').style.display = 'none';
+      $('formNueva').style.display = 'none';
+      $('boxInvalido').style.display = 'block';
+    }
+
+    // Si el enlace venía con un error (vencido, ya usado), Supabase lo deja en la URL
+    if (/error/i.test(window.location.hash) || /error/i.test(window.location.search)) {
+      mostrarInvalido();
+    }
+
+    // Al abrir el enlace del correo, Supabase crea una sesión temporal de recuperación
+    sb.auth.onAuthStateChange((evento) => {
+      if (evento === 'PASSWORD_RECOVERY') mostrarFormulario();
+    });
+
+    // Si pasados unos segundos no hubo evento de recuperación, solo se permite
+    // continuar a quien ya tenga una sesión activa; en otro caso el enlace no sirve
+    setTimeout(async () => {
+      if (enlaceValido) return;
+      const { data } = await sb.auth.getSession();
+      if (data && data.session) mostrarFormulario(); else mostrarInvalido();
+    }, 5000);
+
+    $('formNueva').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pass  = $('inputPass').value;
+      const pass2 = $('inputPass2').value;
+      const err   = $('boxError');
+      err.style.display = 'none';
+
+      if (pass.length < 8) {
+        err.textContent = 'La contraseña debe tener al menos 8 caracteres.';
+        err.style.display = 'block'; return;
+      }
+      if (pass !== pass2) {
+        err.textContent = 'Las contraseñas no coinciden.';
+        err.style.display = 'block'; return;
+      }
+
+      const btn = $('btnGuardar');
+      btn.disabled = true; btn.textContent = 'Guardando...';
+
+      const { error } = await sb.auth.updateUser({ password: pass });
+
+      if (error) {
+        err.textContent = /different from the old|same as the old/i.test(error.message)
+          ? 'La nueva contraseña debe ser distinta de la anterior.'
+          : /weak|easy to guess|pwned/i.test(error.message)
+            ? 'Esa contraseña es demasiado fácil de adivinar. Prueba con otra.'
+            : 'No pudimos guardar la contraseña. Inténtalo de nuevo o pide un enlace nuevo.';
+        err.style.display = 'block';
+        btn.disabled = false; btn.textContent = 'Guardar contraseña';
+        return;
+      }
+
+      $('formNueva').style.display = 'none';
+      $('boxListo').style.display = 'block';
+      setTimeout(() => { window.location.href = 'perfil.html'; }, 2500);
+    });
+  </script>
+</body>
+</html>

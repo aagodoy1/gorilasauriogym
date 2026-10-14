@@ -407,6 +407,14 @@
     .footer-ig:hover { background: rgba(191,31,127,0.1); }
     .footer-copy { margin-top: 1.5rem; font-size: 0.75rem; color: rgba(238,232,255,0.2); }
 
+    .modal-info {
+      background: rgba(74,222,128,0.1);
+      border: 1px solid rgba(74,222,128,0.35);
+      border-radius: 8px;
+      padding: 0.6rem 0.9rem;
+      font-size: 0.82rem;
+      color: #4ADE80;
+    }
     .modal-error {
       background: rgba(248,113,113,0.1);
       border: 1px solid rgba(248,113,113,0.4);
@@ -520,8 +528,6 @@
       <li><a href="#servicios">Servicios</a></li>
       <li><a href="#nosotros">Nosotros</a></li>
       <li><a href="#entrenador">Entrenador</a></li>
-      <li><a href="privacidad.html">Privacidad</a></li>
-      <li><a href="terminos.html">Términos</a></li>
       <!-- OCULTO TEMPORALMENTE - descomentar cuando se active el sistema de reservas
       <li><a href="#reservas" class="nav-cta">Reservar hora</a></li>
       -->
@@ -555,7 +561,8 @@
       <h2 class="modal-title">Perfil Saurio</h2>
       <p class="modal-sub">Ingresa con tu email y contraseña</p>
       <div class="modal-form">
-        <div id="loginError" class="modal-error" style="display:none"></div>
+        <div id="loginError" class="modal-error" style="display:none" role="alert"></div>
+        <div id="loginInfo" class="modal-info" style="display:none" role="status"></div>
         <div class="input-group">
           <label>Email</label>
           <input type="email" id="inputEmail" placeholder="tucorreo@gmail.com" />
@@ -564,9 +571,11 @@
           <label>Contraseña</label>
           <input type="password" id="inputPass" placeholder="••••••••" />
         </div>
+        <div id="turnstileLogin"></div>
         <button class="btn-primary btn-full" id="btnLogin">Ingresar</button>
         <p class="modal-hint">¿No tienes cuenta? <a href="registro.html" style="color:#BF1F7F">Regístrate aquí</a></p>
-        <p class="modal-hint">¿Olvidaste tu contraseña? Habla con tu entrenador.</p>
+        <p class="modal-hint">¿Olvidaste tu contraseña? <a href="#" id="btnOlvide" style="color:#BF1F7F">Recupérala por email</a></p>
+        <p class="modal-hint" style="margin-top:0.25rem;">Escribe tu email arriba y presiona “Recupérala por email”.</p>
       </div>
     </div>
   </div>
@@ -780,6 +789,8 @@
       <li><a href="#servicios">Servicios</a></li>
       <li><a href="#nosotros">Nosotros</a></li>
       <li><a href="#entrenador">Entrenador</a></li>
+      <li><a href="privacidad.html">Privacidad</a></li>
+      <li><a href="terminos.html">Términos</a></li>
       <!-- OCULTO TEMPORALMENTE - descomentar cuando se active el sistema de reservas online
       <li><a href="#reservas">Reservas</a></li>
       -->
@@ -801,26 +812,96 @@
     <p class="footer-copy">© 2026 Gorilasaurio Gym · Volcán Longav, Peñalolén, Santiago, Chile</p>
   </footer>
 
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL  = 'https://djomlyilfuncqdhyqxgw.supabase.co';
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqb21seWlsZnVuY3FkaHlxeGd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTk1OTIsImV4cCI6MjA5OTg5NTU5Mn0.svT1PAczck-ioWVJ58SqlT4H1gL9v3xOVio71eietwE';
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-    // Modal (botón de apertura oculto temporalmente junto con login/registro)
+    // ── Verificación anti-bots (Cloudflare Turnstile) ─────────────
+    // La site key es pública. La secret key va solo en Supabase (Attack Protection).
+    const TURNSTILE_SITEKEY = '0x4AAAAAAFU1tMcSOcsIZRFM';
+    let captchaWidgetId = null;
+    let captchaToken = null;
+
+    function esperarTurnstile(cb, intentos = 0) {
+      if (window.turnstile) cb();
+      else if (intentos < 100) setTimeout(() => esperarTurnstile(cb, intentos + 1), 150);
+    }
+    function renderCaptcha(selector) {
+      if (captchaWidgetId !== null) return;
+      esperarTurnstile(() => {
+        captchaWidgetId = turnstile.render(selector, {
+          sitekey: TURNSTILE_SITEKEY,
+          theme: 'dark',
+          appearance: 'interaction-only', // solo se ve si Cloudflare pide un desafío
+          callback: t => { captchaToken = t; },
+          'expired-callback': () => { captchaToken = null; },
+          'error-callback':   () => { captchaToken = null; }
+        });
+      });
+    }
+    function resetCaptcha() {
+      captchaToken = null; // cada token sirve una sola vez
+      if (captchaWidgetId !== null && window.turnstile) turnstile.reset(captchaWidgetId);
+    }
+
+    // Modal de inicio de sesión
     const modal = document.getElementById('modalLogin');
     const btnAbrirLogin = document.getElementById('btnAbrirLogin');
     if (btnAbrirLogin) {
       btnAbrirLogin.addEventListener('click', e => {
         e.preventDefault();
         modal.classList.add('abierto');
+        renderCaptcha('#turnstileLogin'); // se crea la primera vez que se abre el modal
       });
     }
     document.getElementById('btnCerrarLogin').addEventListener('click', () => {
       modal.classList.remove('abierto');
     });
     modal.addEventListener('click', e => {
-      if (e.target === modal) modal.style.display = 'none';
+      if (e.target === modal) modal.classList.remove('abierto');
+    });
+
+    // Recuperar contraseña: envía un email con un enlace para elegir una nueva
+    document.getElementById('btnOlvide').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const link    = e.currentTarget;
+      const email   = document.getElementById('inputEmail').value.trim();
+      const errDiv  = document.getElementById('loginError');
+      const infoDiv = document.getElementById('loginInfo');
+      errDiv.style.display = 'none'; infoDiv.style.display = 'none';
+
+      if (!email) {
+        errDiv.textContent = 'Escribe tu email en el campo de arriba y vuelve a presionar “Recupérala por email”.';
+        errDiv.style.display = 'block'; return;
+      }
+      if (!captchaToken) {
+        errDiv.textContent = 'La verificación de seguridad aún no está lista. Espera un momento e inténtalo de nuevo.';
+        errDiv.style.display = 'block'; return;
+      }
+
+      link.style.pointerEvents = 'none';
+      const { error } = await sb.auth.resetPasswordForEmail(email, {
+        redirectTo: new URL('restablecer.html', window.location.href).href,
+        captchaToken
+      });
+      resetCaptcha(); // el token ya se usó
+      link.style.pointerEvents = '';
+
+      if (error) {
+        errDiv.textContent = /captcha/i.test(error.message)
+          ? 'No pudimos verificar que eres una persona. Inténtalo de nuevo.'
+          : /only request this once|rate limit|seconds/i.test(error.message)
+            ? 'Ya enviamos un correo hace poco. Espera un minuto antes de pedir otro.'
+            : 'No pudimos enviar el correo. Inténtalo de nuevo en unos minutos.';
+        errDiv.style.display = 'block'; return;
+      }
+
+      // Mismo mensaje exista o no la cuenta, para no revelar quién es cliente
+      infoDiv.textContent = 'Si ese email tiene una cuenta, te enviamos un enlace para crear una nueva contraseña. Revisa también tu carpeta de spam.';
+      infoDiv.style.display = 'block';
     });
 
     // Login con Supabase
@@ -828,19 +909,30 @@
       const email = document.getElementById('inputEmail').value.trim();
       const pass  = document.getElementById('inputPass').value.trim();
       const errDiv = document.getElementById('loginError');
+      document.getElementById('loginInfo').style.display = 'none';
 
       if (!email || !pass) {
         errDiv.textContent = 'Por favor ingresa tu email y contraseña.';
         errDiv.style.display = 'block'; return;
       }
 
+      if (!captchaToken) {
+        errDiv.textContent = 'La verificación de seguridad aún no está lista. Espera un momento e inténtalo de nuevo.';
+        errDiv.style.display = 'block'; return;
+      }
+
       const btn = document.getElementById('btnLogin');
       btn.textContent = 'Ingresando...'; btn.disabled = true;
 
-      const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+      const { data, error } = await sb.auth.signInWithPassword({
+        email, password: pass, options: { captchaToken }
+      });
+      resetCaptcha(); // el token ya se usó
 
       if (error) {
-        errDiv.textContent = 'Email o contraseña incorrectos.';
+        errDiv.textContent = /captcha/i.test(error.message)
+          ? 'No pudimos verificar que eres una persona. Inténtalo de nuevo.'
+          : 'Email o contraseña incorrectos.';
         errDiv.style.display = 'block';
         btn.textContent = 'Ingresar'; btn.disabled = false;
         return;

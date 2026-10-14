@@ -259,23 +259,51 @@
           <input type="checkbox" id="chkEdad" />
           <span>Declaro tener 18 años o más. Si soy menor de edad, cuento con la autorización de mi madre, padre o tutor legal.</span>
         </label>
-        <label class="check">
-          <input type="checkbox" id="chkSalud" />
-          <span>Autorizo el tratamiento de mis datos de composición corporal para que mi entrenador haga seguimiento de mi evolución. Puedo retirar esta autorización cuando quiera.</span>
-        </label>
-        <p class="consents-note">Las tres autorizaciones son necesarias para crear tu cuenta.</p>
+        <p class="consents-note">Las dos autorizaciones son necesarias para crear tu cuenta.</p>
       </div>
+
+      <div id="turnstileRegistro"></div>
 
       <button class="btn-submit" id="btnRegistrar">Crear mi cuenta</button>
       <p class="hint">¿Ya tienes cuenta? <a href="index.html">Inicia sesión aquí</a></p>
     </div>
   </div>
 
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL  = 'https://djomlyilfuncqdhyqxgw.supabase.co';
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqb21seWlsZnVuY3FkaHlxeGd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTk1OTIsImV4cCI6MjA5OTg5NTU5Mn0.svT1PAczck-ioWVJ58SqlT4H1gL9v3xOVio71eietwE';
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    // ── Verificación anti-bots (Cloudflare Turnstile) ─────────────
+    // La site key es pública. La secret key va solo en Supabase (Attack Protection).
+    const TURNSTILE_SITEKEY = '0x4AAAAAAFU1tMcSOcsIZRFM';
+    let captchaWidgetId = null;
+    let captchaToken = null;
+
+    function esperarTurnstile(cb, intentos = 0) {
+      if (window.turnstile) cb();
+      else if (intentos < 100) setTimeout(() => esperarTurnstile(cb, intentos + 1), 150);
+    }
+    function renderCaptcha(selector) {
+      if (captchaWidgetId !== null) return;
+      esperarTurnstile(() => {
+        captchaWidgetId = turnstile.render(selector, {
+          sitekey: TURNSTILE_SITEKEY,
+          theme: 'dark',
+          appearance: 'interaction-only', // solo se ve si Cloudflare pide un desafío
+          callback: t => { captchaToken = t; },
+          'expired-callback': () => { captchaToken = null; },
+          'error-callback':   () => { captchaToken = null; }
+        });
+      });
+    }
+    function resetCaptcha() {
+      captchaToken = null; // cada token sirve una sola vez
+      if (captchaWidgetId !== null && window.turnstile) turnstile.reset(captchaWidgetId);
+    }
+    renderCaptcha('#turnstileRegistro');
 
     // Formatea RUT automáticamente mientras escribe
     document.getElementById('inputRut').addEventListener('input', function() {
@@ -322,8 +350,9 @@
         errBox.textContent = 'Debes declarar que tienes 18 años o más o, si eres menor de edad, que cuentas con la autorización de tu madre, padre o tutor legal.';
         errBox.style.display = 'block'; return;
       }
-      if (!document.getElementById('chkSalud').checked) {
-        errBox.textContent = 'Debes autorizar el tratamiento de tus datos de composición corporal para poder crear tu cuenta.';
+
+      if (!captchaToken) {
+        errBox.textContent = 'La verificación de seguridad aún no está lista. Espera un momento e inténtalo de nuevo. Si persiste, recarga la página o desactiva el bloqueador de anuncios.';
         errBox.style.display = 'block'; return;
       }
 
@@ -339,20 +368,35 @@
         email,
         password: pass,
         options: {
+          captchaToken,
           data: {
             nombre, apellido, rut, telefono,
-            version_documentos:        '2026-10-11',
+            version_documentos:        '2026-10-14',
             declara_edad_at:           ahora,
-            acepta_terminos_at:        ahora,
-            acepta_datos_salud_at:     ahora
+            acepta_terminos_at:        ahora
           }
         }
       });
 
+      resetCaptcha(); // el token ya se usó
+
       if (error) {
-        errBox.textContent = error.message === 'User already registered'
-          ? 'Ya existe una cuenta con ese email.'
-          : 'Error al crear la cuenta: ' + error.message;
+        errBox.textContent = /captcha/i.test(error.message)
+          ? 'No pudimos verificar que eres una persona. Inténtalo de nuevo.'
+          : error.message === 'User already registered'
+            ? 'Ya existe una cuenta con ese email.'
+            : /database error saving new user|rut_duplicado/i.test(error.message)
+              ? 'No pudimos crear la cuenta. Es posible que este RUT ya tenga una cuenta asociada. Si es tuyo, intenta iniciar sesión o escribe a gimnasiogorilasaurio@gmail.com.'
+              : 'Error al crear la cuenta: ' + error.message;
+        errBox.style.display = 'block';
+        btn.textContent = 'Crear mi cuenta'; btn.disabled = false;
+        return;
+      }
+
+      // Si el email ya tiene una cuenta, Supabase no da error: devuelve un usuario
+      // "falso" sin identidades y no envía ningún correo. Lo detectamos aquí.
+      if (data && data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+        errBox.textContent = 'Ya existe una cuenta con ese email. Inicia sesión, o si no recuerdas tu contraseña usa “Recupérala por email” en la ventana de inicio de sesión.';
         errBox.style.display = 'block';
         btn.textContent = 'Crear mi cuenta'; btn.disabled = false;
         return;

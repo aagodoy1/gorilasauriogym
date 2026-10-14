@@ -228,22 +228,43 @@
       margin-bottom: 0.3rem;
     }
 
-    /* ── PLACEHOLDER BANNER ─────────────────────────────── */
-    .placeholder-banner {
-      background: rgba(107,45,176,0.08);
-      border: 1.5px dashed rgba(107,45,176,0.3);
-      border-radius: 12px;
-      padding: 1rem 1.25rem;
-      font-size: 0.85rem;
-      color: rgba(238,232,255,0.4);
-      font-style: italic;
-      margin-bottom: 1.5rem;
+    /* ── SELECTOR + GRÁFICO DE EJERCICIO ─────────────────── */
+    .ej-toolbar {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; margin: 1.75rem 0 1.25rem;
     }
+    .ej-toolbar label {
+      display: block; font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: rgba(238,232,255,0.6); margin-bottom: 0.4rem;
+    }
+    .ej-toolbar select {
+      min-width: 240px; padding: 0.7rem 1rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(191,31,127,0.25);
+      border-radius: 10px; color: #fff;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+    }
+    .ej-toolbar select option { background: #1A0A2E; color: #fff; }
+    .ej-toolbar select:focus-visible { outline: 2px solid #E872BE; outline-offset: 2px; }
+    .ej-resumen { font-size: 0.85rem; color: rgba(238,232,255,0.55); }
+    .ej-resumen strong { color: var(--text-ghost); font-weight: 600; }
+    .chart-empty {
+      display: none; align-items: center; justify-content: center;
+      height: 200px; text-align: center; padding: 0 1rem;
+      font-size: 0.88rem; color: rgba(238,232,255,0.4);
+    }
+    .record-card.vacio { opacity: 0.55; }
+    .record-card.vacio .record-value { -webkit-text-fill-color: rgba(238,232,255,0.35); background: none; }
 
     @media (max-width: 680px) {
       .charts-grid { grid-template-columns: 1fr; }
       .chart-card.full { grid-column: 1; }
       .perfil-badge { display: none; }
+      .topbar { padding: 0.75rem 1rem; }
+      .topbar-logo span { display: none; }
+      .ej-toolbar select { min-width: 0; width: 100%; }
+      .ej-toolbar > div:first-child { width: 100%; }
     }
   </style>
 </head>
@@ -266,78 +287,42 @@
 
     <!-- PERFIL HERO -->
     <div class="perfil-hero">
-      <div class="avatar">🦍</div>
+      <div class="avatar" aria-hidden="true">🦍</div>
       <div class="perfil-info">
         <h1 id="perfilNombre">Cargando...</h1>
         <div class="perfil-meta" id="perfilMeta">...</div>
       </div>
-      <div class="perfil-badge" id="perfilBadge">⚡ Saurio Veterano</div>
-    </div>
-
-    <div class="placeholder-banner">
-      📋 Los datos de este perfil son de ejemplo. Tu entrenador los irá actualizando después de cada medición.
+      <div class="perfil-badge" id="perfilBadge" style="display:none"></div>
     </div>
 
     <!-- STATS ACTUALES -->
-    <p class="section-eyebrow">Última medición</p>
+    <p class="section-eyebrow" id="eyebrowMedicion">Última medición</p>
     <p class="section-label">Tu estado actual</p>
 
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-icon">⚖️</div>
-        <div class="stat-value">82<span class="stat-unit">kg</span></div>
+        <div class="stat-icon" aria-hidden="true">⚖️</div>
+        <div class="stat-value" id="statPeso">—</div>
         <div class="stat-label">Peso corporal</div>
-        <div class="stat-delta delta-down">▼ 1.5 kg vs mes anterior</div>
+        <div class="stat-delta" id="statPesoDelta"></div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon">📏</div>
-        <div class="stat-value">178<span class="stat-unit">cm</span></div>
+        <div class="stat-icon" aria-hidden="true">📏</div>
+        <div class="stat-value" id="statAltura">—</div>
         <div class="stat-label">Altura</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">🎂</div>
-        <div class="stat-value">28<span class="stat-unit">años</span></div>
-        <div class="stat-label">Edad</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">🔥</div>
-        <div class="stat-value">18<span class="stat-unit">%</span></div>
-        <div class="stat-label">% Grasa corporal</div>
-        <div class="stat-delta delta-down">▼ 0.8% vs mes anterior</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">💪</div>
-        <div class="stat-value">64<span class="stat-unit">kg</span></div>
-        <div class="stat-label">Masa muscular</div>
-        <div class="stat-delta delta-up">▲ 0.6 kg vs mes anterior</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat icon">📊</div>
-        <div class="stat-value">25.9</div>
-        <div class="stat-label">IMC</div>
-        <div class="stat-delta delta-down">▼ 0.4 vs mes anterior</div>
       </div>
     </div>
 
-    <!-- GRÁFICOS -->
-    <p class="section-eyebrow">Últimos 6 meses</p>
-    <p class="section-label">Evolución en el tiempo</p>
+    <!-- GRÁFICO DE PESO -->
+    <p class="section-eyebrow">Últimas 10 mediciones</p>
+    <p class="section-label">Evolución del peso</p>
 
     <div class="charts-grid">
-      <div class="chart-card">
-        <div class="chart-title">Peso corporal</div>
-        <div class="chart-sub">Kilogramos · últimos 6 meses</div>
-        <div class="chart-wrap"><canvas id="chartPeso"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">% Grasa corporal</div>
-        <div class="chart-sub">Porcentaje · últimos 6 meses</div>
-        <div class="chart-wrap"><canvas id="chartGrasa"></canvas></div>
-      </div>
       <div class="chart-card full">
-        <div class="chart-title">Masa muscular vs Grasa</div>
-        <div class="chart-sub">Composición corporal en kg · últimos 6 meses</div>
-        <div class="chart-wrap" style="height:220px"><canvas id="chartCompo"></canvas></div>
+        <div class="chart-title">Peso corporal</div>
+        <div class="chart-sub">Kilogramos · últimas 10 mediciones</div>
+        <div class="chart-wrap"><canvas id="chartPeso"></canvas></div>
+        <div class="chart-empty" id="pesoVacio">Aún no tienes mediciones registradas.</div>
       </div>
     </div>
 
@@ -345,55 +330,22 @@
     <p class="section-eyebrow">Pesos máximos</p>
     <p class="section-label">Récords por ejercicio</p>
 
-    <div class="records-grid">
-      <div class="record-card">
-        <div class="record-icon">🏋️</div>
+    <div class="records-grid" id="recordsGrid"></div>
+
+    <div class="chart-card" style="margin-top:1.5rem">
+      <div class="chart-title">Evolución por ejercicio</div>
+      <div class="chart-sub">Kilogramos · últimos 10 registros</div>
+      <div class="ej-toolbar" style="margin-top:0">
         <div>
-          <div class="record-name">Sentadilla</div>
-          <div class="record-value">120 <span style="font-size:1rem;opacity:0.6">kg</span></div>
-          <div class="record-date">Logrado el 15 Jun 2025</div>
+          <label for="verEjercicio">Ejercicio</label>
+          <select id="verEjercicio">
+            <option value="">— Selecciona un ejercicio —</option>
+          </select>
         </div>
+        <div class="ej-resumen" id="ejResumen"></div>
       </div>
-      <div class="record-card">
-        <div class="record-icon">⬆️</div>
-        <div>
-          <div class="record-name">Press de banca</div>
-          <div class="record-value">90 <span style="font-size:1rem;opacity:0.6">kg</span></div>
-          <div class="record-date">Logrado el 3 Jul 2025</div>
-        </div>
-      </div>
-      <div class="record-card">
-        <div class="record-icon">🔽</div>
-        <div>
-          <div class="record-name">Peso muerto</div>
-          <div class="record-value">140 <span style="font-size:1rem;opacity:0.6">kg</span></div>
-          <div class="record-date">Logrado el 22 Jun 2025</div>
-        </div>
-      </div>
-      <div class="record-card">
-        <div class="record-icon">🙌</div>
-        <div>
-          <div class="record-name">Press militar</div>
-          <div class="record-value">65 <span style="font-size:1rem;opacity:0.6">kg</span></div>
-          <div class="record-date">Logrado el 10 May 2025</div>
-        </div>
-      </div>
-      <div class="record-card">
-        <div class="record-icon">🦵</div>
-        <div>
-          <div class="record-name">Prensa de piernas</div>
-          <div class="record-value">200 <span style="font-size:1rem;opacity:0.6">kg</span></div>
-          <div class="record-date">Logrado el 1 Jul 2025</div>
-        </div>
-      </div>
-      <div class="record-card">
-        <div class="record-icon">💪</div>
-        <div>
-          <div class="record-name">Curl de bíceps</div>
-          <div class="record-value">40 <span style="font-size:1rem;opacity:0.6">kg</span></div>
-          <div class="record-date">Logrado el 28 Jun 2025</div>
-        </div>
-      </div>
+      <div class="chart-wrap" id="ejChartWrap" style="display:none"><canvas id="chartEjercicio"></canvas></div>
+      <div class="chart-empty" id="ejVacio" style="display:flex">Selecciona un ejercicio para ver tu evolución.</div>
     </div>
 
   </main>
@@ -404,154 +356,275 @@
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqb21seWlsZnVuY3FkaHlxeGd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTk1OTIsImV4cCI6MjA5OTg5NTU5Mn0.svT1PAczck-ioWVJ58SqlT4H1gL9v3xOVio71eietwE';
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-    // Cerrar sesión
-    document.getElementById('btnLogout').addEventListener('click', async () => {
-      await sb.auth.signOut();
-      window.location.href = 'index.html';
-    });
+    const $ = id => document.getElementById(id);
 
-    // Cargar datos reales del usuario
-    async function cargarPerfil(session) {
-      // Leer perfil desde la tabla perfiles
-      const { data: perfil, error } = await sb.from('perfiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single();
+    // Mismos ejercicios que el panel de entrenador
+    const EJERCICIOS = [
+      { nombre: 'Sentadilla',        icono: '🏋️' },
+      { nombre: 'Press de banca',    icono: '⬆️' },
+      { nombre: 'Peso muerto',       icono: '🔽' },
+      { nombre: 'Press militar',     icono: '🙌' },
+      { nombre: 'Prensa de piernas', icono: '🦵' },
+      { nombre: 'Curl de bíceps',    icono: '💪' },
+      { nombre: 'Dominadas',         icono: '🧗' },
+      { nombre: 'Remo con barra',    icono: '🚣' },
+      { nombre: 'Hip thrust',        icono: '🍑' },
+      { nombre: 'Otro',              icono: '➕' }
+    ];
 
-      if (perfil) {
-        const nombreCorto = perfil.nombre.split(' ')[0];
-        const fechaInscripcion = new Date(perfil.created_at).toLocaleDateString('es-CL', { month: 'long', year: 'numeric' });
-
-        document.getElementById('chipNombre').textContent = '🦍 ' + nombreCorto;
-        document.getElementById('perfilNombre').textContent = perfil.nombre;
-        document.getElementById('perfilMeta').textContent =
-          'RUT ' + perfil.rut + ' · Miembro desde ' + fechaInscripcion + ' · Entrenador: [Por asignar]';
-
-        // Mostrar botón Panel Admin si es entrenador o admin
-        if (['entrenador', 'admin'].includes(perfil.rol)) {
-          document.getElementById('btnPanelAdmin').style.display = 'inline-block';
-          document.getElementById('perfilBadge').textContent = '🏋️ Entrenador';
-        }
-      } else {
-        document.getElementById('perfilNombre').textContent = session.user.email;
-        document.getElementById('chipNombre').textContent = '🦍 Usuario';
-        document.getElementById('perfilMeta').textContent = 'Perfil en configuración';
-      }
-    }
-
-    // Espera a que Supabase inicialice la sesión correctamente
-    sb.auth.onAuthStateChange(async (event, session) => {
-      if (session) {
-        await cargarPerfil(session);
-      } else if (event === 'SIGNED_OUT' || event === 'INITIAL_SESSION') {
-        window.location.href = 'index.html';
-      }
-    });
+    const fmt = n => Number(n).toLocaleString('es-CL', { maximumFractionDigits: 2 });
+    const fechaLarga = f => new Date(f + 'T12:00:00').toLocaleDateString('es-CL', { day: 'numeric', month: 'short', year: 'numeric' });
+    const fechaCorta = f => new Date(f + 'T12:00:00').toLocaleDateString('es-CL', { day: '2-digit', month: 'short' });
 
     // Configuración base de Chart.js para tema oscuro
     Chart.defaults.color = 'rgba(238,232,255,0.4)';
     Chart.defaults.borderColor = 'rgba(107,45,176,0.15)';
     Chart.defaults.font.family = "'DM Sans', sans-serif";
 
-    const meses = ['Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul'];
+    let chartPeso = null, chartEjercicio = null;
+    let recordsPorEjercicio = {};   // { ejercicio: [registros, más reciente primero] }
 
-    const gradientPurple = ctx => {
-      const g = ctx.createLinearGradient(0, 0, 0, 200);
-      g.addColorStop(0, 'rgba(191,31,127,0.35)');
-      g.addColorStop(1, 'rgba(61,26,110,0.02)');
-      return g;
-    };
-
-    // ── Gráfico Peso ─────────────────────────────────────
-    const ctxPeso = document.getElementById('chartPeso').getContext('2d');
-    new Chart(ctxPeso, {
-      type: 'line',
-      data: {
-        labels: meses,
-        datasets: [{
-          data: [85.5, 84.8, 84.0, 83.2, 82.8, 82.0],
-          borderColor: '#BF1F7F',
-          backgroundColor: gradientPurple(ctxPeso),
-          borderWidth: 2.5,
-          pointBackgroundColor: '#BF1F7F',
-          pointRadius: 4,
-          tension: 0.4, fill: true
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          y: { min: 80, grid: { color: 'rgba(107,45,176,0.12)' } },
-          x: { grid: { display: false } }
-        }
-      }
+    // Cerrar sesión
+    $('btnLogout').addEventListener('click', async () => {
+      await sb.auth.signOut();
+      window.location.href = 'index.html';
     });
 
-    // ── Gráfico % Grasa ──────────────────────────────────
-    const ctxGrasa = document.getElementById('chartGrasa').getContext('2d');
-    new Chart(ctxGrasa, {
-      type: 'line',
-      data: {
-        labels: meses,
-        datasets: [{
-          data: [21.5, 20.8, 20.1, 19.4, 18.8, 18.0],
-          borderColor: '#6B2DB0',
-          backgroundColor: ctx => {
-            const g = ctx.createLinearGradient(0, 0, 0, 200);
-            g.addColorStop(0, 'rgba(107,45,176,0.35)');
-            g.addColorStop(1, 'rgba(107,45,176,0.02)');
-            return g;
-          },
-          borderWidth: 2.5,
-          pointBackgroundColor: '#6B2DB0',
-          pointRadius: 4,
-          tension: 0.4, fill: true
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          y: { min: 15, grid: { color: 'rgba(107,45,176,0.12)' } },
-          x: { grid: { display: false } }
-        }
-      }
-    });
+    // ── Cabecera ──────────────────────────────────────────
+    async function cargarPerfil(session) {
+      const { data: perfil } = await sb.from('perfiles')
+        .select('*').eq('id', session.user.id).single();
 
-    // ── Gráfico Composición ──────────────────────────────
-    const ctxCompo = document.getElementById('chartCompo').getContext('2d');
-    new Chart(ctxCompo, {
-      type: 'bar',
-      data: {
-        labels: meses,
-        datasets: [
-          {
-            label: 'Masa muscular (kg)',
-            data: [62.1, 62.4, 63.0, 63.3, 63.8, 64.2],
-            backgroundColor: 'rgba(107,45,176,0.7)',
-            borderRadius: 6,
-          },
-          {
-            label: 'Grasa (kg)',
-            data: [18.4, 17.8, 16.9, 16.1, 15.4, 14.7],
-            backgroundColor: 'rgba(191,31,127,0.7)',
-            borderRadius: 6,
-          }
-        ]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: true,
-            labels: { color: 'rgba(238,232,255,0.6)', boxRadius: 4, padding: 16 }
-          }
+      if (!perfil) {
+        $('perfilNombre').textContent = session.user.email;
+        $('chipNombre').textContent = '🦍 Usuario';
+        $('perfilMeta').textContent = 'Perfil en configuración';
+        return null;
+      }
+
+      const nombreCorto = perfil.nombre.split(' ')[0];
+      const desde = new Date(perfil.created_at).toLocaleDateString('es-CL', { month: 'long', year: 'numeric' });
+      $('chipNombre').textContent = '🦍 ' + nombreCorto;
+      $('perfilNombre').textContent = perfil.nombre + (perfil.apellido ? ' ' + perfil.apellido : '');
+      $('perfilMeta').textContent = 'RUT ' + perfil.rut + ' · Miembro desde ' + desde;
+
+      if (['entrenador', 'admin'].includes(perfil.rol)) {
+        $('btnPanelAdmin').style.display = 'inline-block';
+        $('perfilBadge').textContent = '🏋️ Entrenador';
+        $('perfilBadge').style.display = '';
+      }
+      return perfil;
+    }
+
+    // ── Mediciones: peso y altura ─────────────────────────
+    async function cargarMediciones(userId) {
+      const { data: mediciones, error } = await sb.from('mediciones')
+        .select('fecha, peso_kg, altura_cm')
+        .eq('usuario_id', userId)
+        .order('fecha', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      const lista = (!error && mediciones) ? mediciones : [];
+
+      if (!lista.length) {
+        $('statPeso').textContent = '—';
+        $('statAltura').textContent = '—';
+        $('statPesoDelta').textContent = '';
+        $('eyebrowMedicion').textContent = 'Aún sin mediciones';
+        $('pesoVacio').style.display = 'flex';
+        document.querySelector('#chartPeso').parentElement.style.display = 'none';
+        if (chartPeso) { chartPeso.destroy(); chartPeso = null; }
+        return;
+      }
+
+      const ultima = lista[0];
+      $('eyebrowMedicion').textContent = 'Última medición · ' + fechaLarga(ultima.fecha);
+
+      $('statPeso').innerHTML = ultima.peso_kg != null
+        ? fmt(ultima.peso_kg) + '<span class="stat-unit">kg</span>' : '—';
+      $('statAltura').innerHTML = ultima.altura_cm != null
+        ? fmt(ultima.altura_cm) + '<span class="stat-unit">cm</span>' : '—';
+
+      // Variación respecto a la medición anterior con peso
+      const delta = $('statPesoDelta');
+      delta.textContent = ''; delta.className = 'stat-delta';
+      const anterior = lista.slice(1).find(m => m.peso_kg != null);
+      if (ultima.peso_kg != null && anterior) {
+        const d = Number(ultima.peso_kg) - Number(anterior.peso_kg);
+        if (d > 0)      { delta.textContent = '▲ +' + fmt(d) + ' kg vs medición anterior'; delta.classList.add('delta-up'); }
+        else if (d < 0) { delta.textContent = '▼ ' + fmt(d) + ' kg vs medición anterior';  delta.classList.add('delta-down'); }
+        else            { delta.textContent = '= sin cambio vs medición anterior'; }
+      }
+
+      // Gráfico de peso (orden cronológico)
+      const conPeso = lista.filter(m => m.peso_kg != null).reverse();
+      if (!conPeso.length) {
+        $('pesoVacio').style.display = 'flex';
+        $('chartPeso').parentElement.style.display = 'none';
+        return;
+      }
+      $('pesoVacio').style.display = 'none';
+      $('chartPeso').parentElement.style.display = 'block';
+
+      const ctx = $('chartPeso').getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, 0, 200);
+      grad.addColorStop(0, 'rgba(191,31,127,0.35)');
+      grad.addColorStop(1, 'rgba(61,26,110,0.02)');
+
+      if (chartPeso) chartPeso.destroy();
+      chartPeso = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: conPeso.map(m => fechaCorta(m.fecha)),
+          datasets: [{
+            data: conPeso.map(m => Number(m.peso_kg)),
+            borderColor: '#BF1F7F', backgroundColor: grad,
+            borderWidth: 2.5, pointBackgroundColor: '#BF1F7F',
+            pointRadius: 4, tension: 0.35, fill: true
+          }]
         },
-        scales: {
-          y: { grid: { color: 'rgba(107,45,176,0.12)' }, stacked: false },
-          x: { grid: { display: false } }
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: c => ' ' + fmt(c.parsed.y) + ' kg' } }
+          },
+          scales: {
+            y: { ticks: { callback: v => v + ' kg' }, grid: { color: 'rgba(107,45,176,0.12)' } },
+            x: { grid: { display: false } }
+          }
         }
+      });
+    }
+
+    // ── Récords por ejercicio ─────────────────────────────
+    function pintarTarjetasRecords() {
+      const grid = $('recordsGrid');
+      grid.innerHTML = '';
+      EJERCICIOS.forEach(ej => {
+        const regs = recordsPorEjercicio[ej.nombre] || [];
+        let mejor = null;
+        regs.forEach(r => { if (!mejor || Number(r.peso_max_kg) > Number(mejor.peso_max_kg)) mejor = r; });
+
+        const card = document.createElement('div');
+        card.className = 'record-card' + (mejor ? '' : ' vacio');
+
+        const icon = document.createElement('div');
+        icon.className = 'record-icon'; icon.setAttribute('aria-hidden', 'true');
+        icon.textContent = ej.icono;
+
+        const txt = document.createElement('div');
+        const nombre = document.createElement('div');
+        nombre.className = 'record-name'; nombre.textContent = ej.nombre;
+        const valor = document.createElement('div');
+        valor.className = 'record-value';
+        valor.textContent = mejor ? fmt(mejor.peso_max_kg) + ' ' : '—';
+        if (mejor) {
+          const u = document.createElement('span');
+          u.style.cssText = 'font-size:1rem;opacity:0.6'; u.textContent = 'kg';
+          valor.appendChild(u);
+        }
+        const fecha = document.createElement('div');
+        fecha.className = 'record-date';
+        fecha.textContent = mejor ? 'Logrado el ' + fechaLarga(mejor.fecha) : 'Sin registros';
+
+        txt.append(nombre, valor, fecha);
+        card.append(icon, txt);
+        grid.appendChild(card);
+      });
+    }
+
+    async function cargarRecords(userId) {
+      const { data, error } = await sb.from('records_ejercicio')
+        .select('ejercicio, peso_max_kg, fecha, created_at')
+        .eq('usuario_id', userId)
+        .order('fecha', { ascending: false })
+        .order('created_at', { ascending: false });
+
+      recordsPorEjercicio = {};
+      if (!error && data) {
+        data.forEach(r => { (recordsPorEjercicio[r.ejercicio] ||= []).push(r); });
+      }
+      pintarTarjetasRecords();
+      pintarEjercicio($('verEjercicio').value);
+    }
+
+    function pintarEjercicio(ejercicio) {
+      const wrap = $('ejChartWrap'), vacio = $('ejVacio'), resumen = $('ejResumen');
+      if (chartEjercicio) { chartEjercicio.destroy(); chartEjercicio = null; }
+      resumen.textContent = '';
+
+      if (!ejercicio) {
+        wrap.style.display = 'none';
+        vacio.textContent = 'Selecciona un ejercicio para ver tu evolución.';
+        vacio.style.display = 'flex';
+        return;
+      }
+      const regs = recordsPorEjercicio[ejercicio] || [];
+      if (!regs.length) {
+        wrap.style.display = 'none';
+        vacio.textContent = 'Aún no hay registros de ' + ejercicio + '.';
+        vacio.style.display = 'flex';
+        return;
+      }
+
+      const maximo = Math.max(...regs.map(r => Number(r.peso_max_kg)));
+      resumen.innerHTML = 'Mejor marca: <strong></strong> · ' + regs.length + (regs.length === 1 ? ' registro' : ' registros');
+      resumen.querySelector('strong').textContent = fmt(maximo) + ' kg';
+
+      const recientes = regs.slice(0, 10).reverse();           // cronológico
+      const valores = recientes.map(r => Number(r.peso_max_kg));
+      const tope = Math.max(...valores);
+
+      vacio.style.display = 'none';
+      wrap.style.display = 'block';
+
+      chartEjercicio = new Chart($('chartEjercicio'), {
+        type: 'bar',
+        data: {
+          labels: recientes.map(r => fechaCorta(r.fecha)),
+          datasets: [{
+            label: ejercicio + ' (kg)',
+            data: valores,
+            backgroundColor: valores.map(v => v === tope ? '#BF1F7F' : '#6B2DB0'),
+            borderRadius: 6, maxBarThickness: 48
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: c => ' ' + fmt(c.parsed.y) + ' kg' } }
+          },
+          scales: {
+            x: { ticks: { color: 'rgba(238,232,255,0.55)' }, grid: { display: false } },
+            y: { beginAtZero: true,
+                 ticks: { color: 'rgba(238,232,255,0.55)', callback: v => v + ' kg' },
+                 grid: { color: 'rgba(107,45,176,0.15)' } }
+          }
+        }
+      });
+    }
+
+    // Selector de ejercicio
+    const sel = $('verEjercicio');
+    EJERCICIOS.forEach(e => sel.appendChild(new Option(e.nombre, e.nombre)));
+    sel.addEventListener('change', () => pintarEjercicio(sel.value));
+
+    // Estado inicial de las tarjetas (vacías) mientras carga
+    pintarTarjetasRecords();
+
+    // ── Sesión ────────────────────────────────────────────
+    let cargadoPara = null;
+    sb.auth.onAuthStateChange(async (event, session) => {
+      if (session) {
+        if (cargadoPara === session.user.id && event === 'TOKEN_REFRESHED') return;
+        cargadoPara = session.user.id;
+        await cargarPerfil(session);
+        await Promise.all([cargarMediciones(session.user.id), cargarRecords(session.user.id)]);
+      } else if (event === 'SIGNED_OUT' || event === 'INITIAL_SESSION') {
+        window.location.href = 'index.html';
       }
     });
   </script>
