@@ -257,12 +257,25 @@
     .record-card.vacio { opacity: 0.55; }
     .record-card.vacio .record-value { -webkit-text-fill-color: rgba(238,232,255,0.35); background: none; }
 
+    .btn-config {
+      padding: 0.4rem 1rem; border-radius: 100px;
+      border: 1px solid rgba(191,31,127,0.4);
+      color: var(--text-ghost); font-size: 0.8rem; font-weight: 600;
+      text-decoration: none; transition: all 0.2s; white-space: nowrap;
+    }
+    .btn-config:hover { background: rgba(191,31,127,0.15); border-color: #BF1F7F; }
+    .btn-config:focus-visible { outline: 2px solid #E872BE; outline-offset: 3px; }
+    .btn-config .corto { display: none; }
+
     @media (max-width: 680px) {
       .charts-grid { grid-template-columns: 1fr; }
       .chart-card.full { grid-column: 1; }
       .perfil-badge { display: none; }
       .topbar { padding: 0.75rem 1rem; }
       .topbar-logo span { display: none; }
+      .btn-config .largo { display: none; }
+      .btn-config .corto { display: inline; }
+      .topbar-right { gap: 0.5rem; }
       .ej-toolbar select { min-width: 0; width: 100%; }
       .ej-toolbar > div:first-child { width: 100%; }
     }
@@ -278,6 +291,7 @@
     </a>
     <div class="topbar-right">
       <a href="admin.html" id="btnPanelAdmin" class="btn-admin" style="display:none">⚙️ Panel Admin</a>
+      <a href="configuracion.html" class="btn-config" title="Configuraciones de mi perfil">⚙️ <span class="largo">Configuraciones de mi perfil</span><span class="corto">Config.</span></a>
       <div class="user-chip" id="chipNombre">🦍 Cargando...</div>
       <button class="btn-logout" id="btnLogout">Cerrar sesión</button>
     </div>

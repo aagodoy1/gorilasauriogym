@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Configuraciones de mi perfil — Gorilasaurio Gym</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --purple-dark: #3D1A6E;
+      --purple-mid:  #6B2DB0;
+      --magenta:     #BF1F7F;
+      --bg-night:    #0E0720;
+      --bg-card:     #1A0A2E;
+      --text-ghost:  #EEE8FF;
+      --gradient:    linear-gradient(135deg, #3D1A6E 0%, #6B2DB0 55%, #BF1F7F 100%);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg-night); color: var(--text-ghost); min-height: 100vh; }
+
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(26,10,46,0.9);
+      border-bottom: 1px solid rgba(191,31,127,0.2);
+      backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .topbar-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .topbar-logo img { height: 36px; }
+    .topbar-logo span {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.08em;
+      background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .btn-volver {
+      padding: 0.4rem 1rem; border-radius: 100px;
+      border: 1px solid rgba(191,31,127,0.4);
+      color: var(--text-ghost); font-size: 0.8rem; font-weight: 600; text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-volver:hover { background: rgba(191,31,127,0.15); border-color: #BF1F7F; }
+    a:focus-visible, button:focus-visible { outline: 2px solid #E872BE; outline-offset: 3px; }
+
+    .page { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 0.05em;
+      background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .intro { font-size: 0.9rem; color: rgba(238,232,255,0.55); margin: 0.25rem 0 2rem; }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid rgba(107,45,176,0.2);
+      border-radius: 20px; padding: 1.75rem;
+      margin-bottom: 1.5rem; position: relative; overflow: hidden;
+    }
+    .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient); }
+    .card-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+    .card-sub { font-size: 0.82rem; color: rgba(238,232,255,0.45); margin-bottom: 1.25rem; }
+
+    .form { display: flex; flex-direction: column; gap: 1rem; max-width: 380px; }
+    .form label {
+      display: block; font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: rgba(238,232,255,0.6); margin-bottom: 0.4rem;
+    }
+    .form input {
+      width: 100%; padding: 0.75rem 1rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(191,31,127,0.2);
+      border-radius: 10px; color: #fff; font-size: 0.95rem;
+      font-family: 'DM Sans', sans-serif; outline: none;
+    }
+    .form input:focus { border-color: #BF1F7F; background: rgba(191,31,127,0.05); }
+    .form input:focus-visible { outline: 2px solid #E872BE; outline-offset: 2px; }
+    .form input::placeholder { color: rgba(255,255,255,0.25); }
+    .btn-guardar {
+      align-self: flex-start; padding: 0.75rem 1.6rem;
+      background: var(--gradient); color: #fff; border: none; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(191,31,127,0.3);
+    }
+    .btn-guardar:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .msg { display: none; border-radius: 10px; padding: 0.75rem 1rem; font-size: 0.88rem; line-height: 1.5; }
+    .msg.error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.35); color: #F87171; }
+    .msg.ok    { background: rgba(74,222,128,0.1);  border: 1px solid rgba(74,222,128,0.35);  color: #4ADE80; }
+
+    @media (max-width: 680px) {
+      .topbar { padding: 0.75rem 1rem; }
+      .topbar-logo span { display: none; }
+      .form { max-width: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <a href="index.html" class="topbar-logo">
+      <img src="logo.png" alt="Gorilasaurio Gym" />
+      <span>GORILASAURIO GYM</span>
+    </a>
+    <a href="perfil.html" class="btn-volver">← Volver a mi perfil</a>
+  </header>
+
+  <main class="page">
+    <h1>Configuraciones de mi perfil</h1>
+    <p class="intro" id="intro">Administra los datos de tu cuenta.</p>
+
+    <!-- Aquí irán más opciones en el futuro (email de respaldo, cambiar email, nombre, etc.) -->
+
+    <section class="card" aria-labelledby="tituloPass">
+      <div class="card-title" id="tituloPass">Cambiar contraseña</div>
+      <div class="card-sub">Elige una contraseña nueva de al menos 8 caracteres.</div>
+      <form class="form" id="formPass" novalidate>
+        <div id="passMsg" class="msg" role="alert"></div>
+        <div>
+          <label for="passNueva">Nueva contraseña</label>
+          <input type="password" id="passNueva" autocomplete="new-password" placeholder="Mínimo 8 caracteres" />
+        </div>
+        <div>
+          <label for="passNueva2">Confirmar contraseña</label>
+          <input type="password" id="passNueva2" autocomplete="new-password" placeholder="Repite la contraseña" />
+        </div>
+        <button type="submit" class="btn-guardar" id="btnPass">Guardar contraseña</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL  = 'https://djomlyilfuncqdhyqxgw.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqb21seWlsZnVuY3FkaHlxeGd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTk1OTIsImV4cCI6MjA5OTg5NTU5Mn0.svT1PAczck-ioWVJ58SqlT4H1gL9v3xOVio71eietwE';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    const $ = id => document.getElementById(id);
+
+    // Solo para usuarios con sesión iniciada
+    sb.auth.onAuthStateChange((event, session) => {
+      if (!session && (event === 'SIGNED_OUT' || event === 'INITIAL_SESSION')) {
+        window.location.href = 'index.html';
+      }
+    });
+
+    $('formPass').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = $('passMsg'), btn = $('btnPass');
+      const p1 = $('passNueva').value, p2 = $('passNueva2').value;
+      const mostrar = (texto, tipo) => { msg.textContent = texto; msg.className = 'msg ' + tipo; msg.style.display = 'block'; };
+      msg.style.display = 'none';
+
+      if (p1.length < 8) return mostrar('La contraseña debe tener al menos 8 caracteres.', 'error');
+      if (p1 !== p2)     return mostrar('Las contraseñas no coinciden.', 'error');
+
+      btn.disabled = true; btn.textContent = 'Guardando...';
+      const { error } = await sb.auth.updateUser({ password: p1 });
+      btn.disabled = false; btn.textContent = 'Guardar contraseña';
+
+      if (error) {
+        const m = error.message || '';
+        return mostrar(
+          /different from the old|same as the old/i.test(m) ? 'La nueva contraseña debe ser distinta de la actual.'
+          : /weak|easy to guess|pwned/i.test(m)             ? 'Esa contraseña es demasiado fácil de adivinar. Prueba con otra.'
+          : /reauth|recently|nonce/i.test(m)                ? 'Por seguridad, cierra sesión, vuelve a entrar e inténtalo de nuevo.'
+          : 'No pudimos cambiar la contraseña. Inténtalo de nuevo.', 'error');
+      }
+      $('formPass').reset();
+      mostrar('Tu contraseña se actualizó correctamente.', 'ok');
+    });
+  </script>
+</body>
+</html>
