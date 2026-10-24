@@ -254,18 +254,27 @@
       height: 200px; text-align: center; padding: 0 1rem;
       font-size: 0.88rem; color: rgba(238,232,255,0.4);
     }
+    .ej-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 1.5rem; align-items: start; }
+    .ej-layout .chart-wrap { min-width: 0; height: 260px; }
+    .ej-tabla-titulo { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(238,232,255,0.6); margin-bottom: 0.5rem; }
+    .ej-tabla { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .ej-tabla th { text-align: left; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(238,232,255,0.4); padding: 0.4rem 0.5rem; border-bottom: 1px solid rgba(107,45,176,0.25); }
+    .ej-tabla td { padding: 0.55rem 0.5rem; border-bottom: 1px solid rgba(107,45,176,0.12); }
+    .ej-tabla td:last-child, .ej-tabla th:last-child { text-align: right; }
+    .var-sube { color: #4ADE80; font-weight: 600; }
+    .var-baja { color: #FACC15; font-weight: 600; }
+    .var-igual { color: rgba(238,232,255,0.4); }
     .record-card.vacio { opacity: 0.55; }
     .record-card.vacio .record-value { -webkit-text-fill-color: rgba(238,232,255,0.35); background: none; }
 
     .btn-config {
-      padding: 0.4rem 1rem; border-radius: 100px;
+      padding: 0.3rem 0.75rem; border-radius: 100px;
       border: 1px solid rgba(191,31,127,0.4);
-      color: var(--text-ghost); font-size: 0.8rem; font-weight: 600;
+      color: var(--text-ghost); font-size: 0.75rem; font-weight: 600;
       text-decoration: none; transition: all 0.2s; white-space: nowrap;
     }
     .btn-config:hover { background: rgba(191,31,127,0.15); border-color: #BF1F7F; }
     .btn-config:focus-visible { outline: 2px solid #E872BE; outline-offset: 3px; }
-    .btn-config .corto { display: none; }
 
     @media (max-width: 680px) {
       .charts-grid { grid-template-columns: 1fr; }
@@ -273,9 +282,8 @@
       .perfil-badge { display: none; }
       .topbar { padding: 0.75rem 1rem; }
       .topbar-logo span { display: none; }
-      .btn-config .largo { display: none; }
-      .btn-config .corto { display: inline; }
       .topbar-right { gap: 0.5rem; }
+      .ej-layout { grid-template-columns: minmax(0, 1fr); }
       .ej-toolbar select { min-width: 0; width: 100%; }
       .ej-toolbar > div:first-child { width: 100%; }
     }
@@ -291,7 +299,7 @@
     </a>
     <div class="topbar-right">
       <a href="admin.html" id="btnPanelAdmin" class="btn-admin" style="display:none">⚙️ Panel Admin</a>
-      <a href="configuracion.html" class="btn-config" title="Configuraciones de mi perfil">⚙️ <span class="largo">Configuraciones de mi perfil</span><span class="corto">Config.</span></a>
+      <a href="configuracion.html" class="btn-config" title="Configuración de mi perfil">⚙️ Configuración</a>
       <div class="user-chip" id="chipNombre">🦍 Cargando...</div>
       <button class="btn-logout" id="btnLogout">Cerrar sesión</button>
     </div>
@@ -358,7 +366,16 @@
         </div>
         <div class="ej-resumen" id="ejResumen"></div>
       </div>
-      <div class="chart-wrap" id="ejChartWrap" style="display:none"><canvas id="chartEjercicio"></canvas></div>
+      <div class="ej-layout" id="ejChartWrap" style="display:none">
+        <div class="chart-wrap"><canvas id="chartEjercicio"></canvas></div>
+        <div>
+          <div class="ej-tabla-titulo">Últimos 5 registros</div>
+          <table class="ej-tabla">
+            <thead><tr><th>Fecha</th><th>Marca</th><th>Cambio</th></tr></thead>
+            <tbody id="ejTabla"></tbody>
+          </table>
+        </div>
+      </div>
       <div class="chart-empty" id="ejVacio" style="display:flex">Selecciona un ejercicio para ver tu evolución.</div>
     </div>
 
@@ -589,33 +606,75 @@
 
       const recientes = regs.slice(0, 10).reverse();           // cronológico
       const valores = recientes.map(r => Number(r.peso_max_kg));
-      const tope = Math.max(...valores);
 
       vacio.style.display = 'none';
-      wrap.style.display = 'block';
+      wrap.style.display = 'grid';
 
-      chartEjercicio = new Chart($('chartEjercicio'), {
-        type: 'bar',
+      // Tabla: últimos 5 registros (más reciente primero) con cambio vs. el registro anterior
+      const tbody = $('ejTabla');
+      tbody.innerHTML = '';
+      regs.slice(0, 5).forEach((r, i) => {
+        const anterior = regs[i + 1];
+        const tr = document.createElement('tr');
+        const tdF = document.createElement('td'); tdF.textContent = fechaCorta(r.fecha) + ' ' + new Date(r.fecha + 'T12:00:00').getFullYear();
+        const tdM = document.createElement('td'); tdM.textContent = fmt(r.peso_max_kg) + ' kg';
+        const tdC = document.createElement('td');
+        if (!anterior) { tdC.textContent = '—'; tdC.className = 'var-igual'; }
+        else {
+          const d = Number(r.peso_max_kg) - Number(anterior.peso_max_kg);
+          if (d > 0)      { tdC.textContent = '+' + fmt(d) + ' kg'; tdC.className = 'var-sube'; }
+          else if (d < 0) { tdC.textContent = fmt(d) + ' kg';       tdC.className = 'var-baja'; }
+          else            { tdC.textContent = '0 kg';               tdC.className = 'var-igual'; }
+        }
+        tr.append(tdF, tdM, tdC);
+        tbody.appendChild(tr);
+      });
+
+      // Plugin sencillo: escribe el valor sobre cada punto
+      const etiquetasDatos = {
+        id: 'etiquetasDatos',
+        afterDatasetsDraw(chart) {
+          const { ctx } = chart;
+          ctx.save();
+          ctx.font = "600 11px 'DM Sans', sans-serif";
+          ctx.fillStyle = '#EEE8FF';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          chart.getDatasetMeta(0).data.forEach((punto, i) => {
+            ctx.fillText(fmt(chart.data.datasets[0].data[i]), punto.x, punto.y - 8);
+          });
+          ctx.restore();
+        }
+      };
+
+      const ctxEj = $('chartEjercicio').getContext('2d');
+      const grad = ctxEj.createLinearGradient(0, 0, 0, 200);
+      grad.addColorStop(0, 'rgba(191,31,127,0.35)');
+      grad.addColorStop(1, 'rgba(61,26,110,0.02)');
+
+      chartEjercicio = new Chart(ctxEj, {
+        type: 'line',
+        plugins: [etiquetasDatos],
         data: {
           labels: recientes.map(r => fechaCorta(r.fecha)),
           datasets: [{
             label: ejercicio + ' (kg)',
             data: valores,
-            backgroundColor: valores.map(v => v === tope ? '#BF1F7F' : '#6B2DB0'),
-            borderRadius: 6, maxBarThickness: 48
+            borderColor: '#BF1F7F', backgroundColor: grad,
+            borderWidth: 2.5, pointBackgroundColor: '#BF1F7F',
+            pointRadius: 4, tension: 0.35, fill: true
           }]
         },
         options: {
           responsive: true, maintainAspectRatio: false,
+          layout: { padding: { top: 22, right: 12 } },
           plugins: {
             legend: { display: false },
             tooltip: { callbacks: { label: c => ' ' + fmt(c.parsed.y) + ' kg' } }
           },
           scales: {
-            x: { ticks: { color: 'rgba(238,232,255,0.55)' }, grid: { display: false } },
-            y: { beginAtZero: true,
-                 ticks: { color: 'rgba(238,232,255,0.55)', callback: v => v + ' kg' },
-                 grid: { color: 'rgba(107,45,176,0.15)' } }
+            y: { grace: '10%', ticks: { callback: v => v + ' kg' }, grid: { color: 'rgba(107,45,176,0.12)' } },
+            x: { grid: { display: false } }
           }
         }
       });
